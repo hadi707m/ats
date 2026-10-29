@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="سِيرة: منشئ سيرة ذاتية بمعاينة مباشرة، قوالب ATS وقوالب إبداعية، حفظ محلي، ولغات ودورات ومشاريع.">
+  <meta name="theme-color" content="#183e38">
+  <title>سِيرة — مسارك القادم يبدأ هنا</title>
+  <!-- Tailwind Play CDN, as requested. All essential layout/print styles are also inline. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" defer></script>
+  <style>
+    :root { --ink:#203c36; --muted:#73817b; --line:#e4e8e2; --green:#286454; --soft:#edf3ed; --canvas:#f3f4ef; --accent:#276354; }
+    * { box-sizing:border-box; }
+    [hidden] { display:none !important; }
+    body { margin:0; color:var(--ink); background:var(--canvas); font:14px/1.65 Arial,Helvetica,sans-serif; }
+    button,input,textarea,select { font:inherit; }
+    button { cursor:pointer; }
+    button,a,input,textarea,select,summary { -webkit-tap-highlight-color:transparent; }
+    button { color:inherit; }
+    button:disabled { cursor:not-allowed; opacity:.38; }
+    a { color:inherit; }
+    :focus-visible { outline:3px solid #9ba94d; outline-offset:3px; }
+    h1,h2,h3,p { margin:0; }
+    .app-header { height:79px; background:#fff; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; padding:0 38px; gap:20px; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand-mark { width:38px; height:41px; display:grid; place-items:center; background:var(--ink); color:#f5f3d9; border-radius:10px 10px 3px 10px; }
+    .brand-name { font-size:27px; font-weight:700; line-height:1.05; }
+    .brand small { display:block; color:var(--muted); font-size:10px; margin-top:5px; }
+    .header-divider { height:29px; width:1px; background:var(--line); margin:0 18px; }
+    .header-caption { font-size:12px; color:var(--muted); }
+    .header-actions { display:flex; align-items:center; gap:18px; }
+    .save-state { font-size:12px; color:#63796a; display:flex; align-items:center; gap:6px; }
+    .save-state::before,.live-dot { content:""; width:6px; height:6px; background:#4d8d66; border-radius:50%; display:inline-block; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:41px; padding:9px 16px; border-radius:7px; border:1px solid var(--line); background:white; font-weight:600; font-size:12px; transition:background .18s,transform .18s; }
+    .btn:hover { background:#f3f6f0; }
+    .btn-primary { color:white; background:var(--ink); border-color:var(--ink); }
+    .btn-primary:hover { background:#315b4f; }
+    .btn-quiet { background:transparent; border-color:transparent; }
+    .btn-danger { color:#a43333; }
+    .icon { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+    .workspace-heading { max-width:1580px; margin:auto; padding:26px 38px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .eyebrow { font-size:10px; color:#7a886d; letter-spacing:1.5px; font-weight:700; margin-bottom:3px; }
+    .workspace-heading h1 { font-size:25px; letter-spacing:-.6px; font-weight:700; line-height:1.5; }
+    .workspace-heading p { color:var(--muted); font-size:12px; margin-top:3px; }
+    .privacy-note { display:flex; align-items:center; gap:8px; color:#7b8475; font-size:11px; }
+    .workspace { max-width:1580px; margin:0 auto; padding:0 38px 30px; display:grid; grid-template-columns:385px minmax(0,1fr); gap:26px; align-items:start; }
+    .editor { background:white; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    .editor-heading { display:flex; align-items:center; justify-content:space-between; padding:20px 22px 16px; }
+    .editor-heading h2 { font-size:16px; font-weight:700; }
+    .step-label { font-size:10px; color:var(--muted); }
+    .tabs { display:flex; border-bottom:1px solid var(--line); padding:0 17px; gap:4px; }
+    .tab { flex:1; border:0; border-bottom:2px solid transparent; background:transparent; padding:12px 5px; font-size:12px; color:var(--muted); display:flex; align-items:center; justify-content:center; gap:7px; }
+    .tab[aria-selected="true"] { border-bottom-color:var(--green); color:var(--green); font-weight:700; }
+    .tab .icon { width:15px; height:15px; }
+    .editor-scroll { max-height:calc(100vh - 340px); min-height:390px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:#cbd4c7 transparent; }
+    .demo-note { margin:16px 20px 3px; border-radius:6px; background:#f5f6eb; padding:9px 12px; color:#717749; font-size:11px; display:flex; gap:8px; justify-content:space-between; align-items:center; }
+    .text-button { background:none; border:0; padding:0; color:var(--green); text-decoration:underline; text-underline-offset:3px; font-size:inherit; }
+    details.form-section { margin:0 20px; border-bottom:1px solid var(--line); }
+    details.form-section:last-child { border-bottom:0; }
+    summary { list-style:none; cursor:pointer; }
+    summary::-webkit-details-marker { display:none; }
+    .section-summary { padding:17px 0; display:flex; align-items:center; gap:10px; font-size:12px; font-weight:700; }
+    .section-summary .section-symbol { display:grid; place-items:center; width:27px; height:27px; border-radius:6px; background:#f1f4ee; color:#607963; }
+    .section-summary .section-symbol .icon { width:15px; height:15px; }
+    .section-summary .chevron { margin-inline-start:auto; width:14px; transition:transform .15s; }
+    details[open]>.section-summary .chevron { transform:rotate(180deg); }
+    .fields { padding:0 0 19px; }
+    .field { display:block; margin-bottom:14px; min-width:0; }
+    .field:last-child { margin-bottom:0; }
+    .field-label { display:block; font-size:11px; font-weight:600; color:#51625a; margin-bottom:6px; }
+    .field input:not([type="checkbox"]):not([type="color"]),.field textarea,.field select { width:100%; min-width:0; padding:10px 11px; border:1px solid #dfe5dc; border-radius:6px; background:#fff; color:#30423a; font-size:12px; line-height:1.65; transition:border-color .15s; }
+    .field input:focus,.field textarea:focus,.field select:focus { outline:2px solid #dce8d4; outline-offset:1px; border-color:#739a7b; }
+    .field input::placeholder,.field textarea::placeholder { color:#9ba29b; }
+    .field textarea { resize:vertical; min-height:90px; }
+    .field input[aria-invalid="true"] { border-color:#bf4b3e !important; }
+    .field-error { color:#b34332; font-size:10px; margin-top:3px; display:block; }
+    .field-hint { font-size:10px; color:#81907c; margin-top:5px; }
+    .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .check-label { display:flex; align-items:center; gap:7px; font-size:11px; color:#5f715f; margin:0 0 14px; }
+    input[type="checkbox"] { accent-color:var(--green); width:15px; height:15px; }
+    .repeat-item { margin-bottom:16px; padding-bottom:16px; border-bottom:1px dashed var(--line); }
+    .item-heading { display:flex; align-items:center; justify-content:space-between; font-size:11px; margin-bottom:11px; color:#7a8774; }
+    .icon-btn { border:0; background:transparent; width:29px; height:29px; display:inline-flex; align-items:center; justify-content:center; border-radius:5px; }
+    .icon-btn:hover { background:var(--soft); }
+    .add-btn { width:100%; border:1px dashed #bacbbb; border-radius:6px; color:var(--green); font-size:11px; padding:9px; background:#fafcf8; }
+    .panel-content { padding:21px; }
+    .panel-intro { font-size:12px; color:#768273; margin-bottom:20px; }
+    .design-label { font-size:12px; font-weight:700; margin-bottom:10px; }
+    .template-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:12px; }
+    .template-choice { padding:8px 7px 10px; border:1px solid var(--line); border-radius:7px; background:white; min-width:0; }
+    .template-choice[aria-pressed="true"] { border:2px solid #507862; padding:7px 6px 9px; background:#f5f8f1; }
+    .template-choice strong { display:block; font-size:11px; margin-top:9px; }
+    .template-choice small { display:block; font-size:9px; color:var(--muted); margin-top:2px; }
+    .template-categories { display:flex; gap:4px; padding:4px; background:#edf1e8; border-radius:8px; margin-bottom:10px; }
+    .template-categories button { flex:1; border:0; border-radius:5px; background:none; padding:10px 5px; font-size:12px; font-weight:700; }
+    .template-categories button[aria-pressed="true"] { background:white; box-shadow:0 2px 5px #233c2710; color:var(--green); }
+    .template-categories span { font-size:10px; padding:1px 5px; background:#e4ebdf; border-radius:4px; margin-inline-start:3px; }
+    .category-description { font-size:11px; color:#6c7963; min-height:40px; margin-bottom:8px; }
+    .active-template { font-size:10px; color:#425f43; border-inline-start:2px solid #85a478; padding-inline-start:7px; margin-bottom:14px; }
+    .palette-note { margin-bottom:23px; }
+    .template-thumbnail { display:block; height:117px; padding:10px 8px; border:1px solid #e1e5dd; background:#fff; box-shadow:0 2px 7px #203c3610; overflow:hidden; }
+    .template-thumbnail i,.template-thumbnail em { display:block; background:#d7ddd5; height:2px; margin:3px 0; }
+    .mini-heading { display:block; border-bottom:1px solid #e4e8df; padding-bottom:4px; margin-bottom:6px; }
+    .mini-heading i:first-child { width:65%; height:5px; background:var(--preview-accent); }
+    .mini-heading i:last-child { width:47%; height:2px; }
+    .mini-sections { display:block; }
+    .mini-block { display:block; margin-top:7px; }
+    .mini-block em { width:40%; height:3px; background:var(--preview-accent); opacity:.8; }
+    .mini-block i:last-child { width:75%; }
+    .mini-classic .mini-heading { text-align:center; border-bottom-color:#999; }.mini-classic .mini-heading i { margin-inline:auto; }
+    .mini-modern .mini-heading,.mini-modern .mini-block { border-inline-start:2px solid var(--preview-accent); padding-inline-start:4px; }
+    .mini-corporate .mini-block { border-block:1px solid #d9ded6; padding-block:2px; }
+    .mini-executive .mini-heading { border-top:4px solid var(--preview-accent); padding-top:5px; }
+    .mini-clean .mini-heading { border:0; padding-bottom:8px; }.mini-clean .mini-block em { width:25%; }
+    .mini-compact .mini-block { margin-top:4px; }.mini-compact i { height:1px; }.mini-compact .mini-heading { border-bottom:2px solid var(--preview-accent); }
+    .mini-lumen .mini-heading { margin:-10px -8px 8px; padding:12px 8px 9px; background:var(--preview-accent); }.mini-lumen .mini-heading i { background:#fff; }
+    .mini-noir .mini-heading { margin:-10px -8px 8px; padding:12px 8px 9px; background:#20242b; border-bottom:3px solid #b8a070; }.mini-noir .mini-heading i { background:#f8f1de; }
+    .mini-editorial .mini-heading { border-bottom:3px double var(--preview-accent); }.mini-editorial .mini-heading i:first-child { height:10px; }
+    .mini-atelier { border-inline-start:6px solid var(--preview-accent); }.mini-atelier .mini-heading { padding:6px 3px; background:#f3eff5; }
+    .mini-ribbon .mini-block em { width:100%; height:6px; }
+    .mini-sage .mini-block { padding:3px 5px; background:#edf3eb; border-radius:5px; margin-top:4px; }
+    .mini-terra { background:#fbf7ee; }.mini-terra .mini-heading i { margin-inline:auto; }.mini-terra .mini-heading { border-bottom:2px solid var(--preview-accent); padding-block:5px; }
+    .mini-split .mini-sections,.mini-folio .mini-sections { display:grid; grid-template-columns:1fr 1fr; gap:5px; }.mini-split .mini-heading { background:var(--preview-accent); padding:6px; }.mini-split .mini-heading i { background:#fff; }.mini-split .mini-block { border:1px solid #e4e8df; padding:3px; }
+    .mini-folio .mini-heading { border-bottom:3px solid var(--preview-accent); padding-bottom:8px; }.mini-folio .mini-block em { width:65%; }
+    .mini-blueprint { background:repeating-linear-gradient(0deg,#fff 0 9px,#eef3fa 9px 10px); }.mini-blueprint .mini-heading { border:1px solid var(--preview-accent); padding:5px; }.mini-blueprint .mini-block { border-bottom:1px dashed #adc0d4; }
+    .mini-frame { outline:3px double var(--preview-accent); outline-offset:-6px; padding:12px; }.mini-frame .mini-heading { text-align:center; }.mini-frame .mini-heading i { margin-inline:auto; }
+    .mini-rose .mini-heading { background:#f8ecf0; padding:10px 7px; border-radius:12px 2px; }.mini-rose .mini-block em { border-radius:4px; width:70%; height:6px; }
+    .swatches { display:flex; align-items:center; gap:9px; margin-bottom:10px; }
+    .swatch { width:26px; height:26px; border:3px solid white; border-radius:50%; box-shadow:0 0 0 1px #e3e5de; background:var(--swatch); }
+    .swatch[aria-pressed="true"] { box-shadow:0 0 0 2px var(--swatch); }
+    .color-control { display:flex; align-items:center; gap:8px; margin-inline-start:auto; }
+    input[type="color"] { width:30px; height:30px; border:1px solid var(--line); border-radius:5px; padding:3px; cursor:pointer; background:white; }
+    .color-value { direction:ltr; font-size:10px; color:var(--muted); }
+    .design-divider { border:0; border-top:1px solid var(--line); margin:22px 0; }
+    .order-list { list-style:none; padding:0; margin:0; }
+    .order-row { display:flex; align-items:center; gap:9px; padding:13px 10px; border:1px solid var(--line); border-radius:7px; background:#fff; margin-bottom:9px; font-size:12px; }
+    .order-row.dragging { opacity:.4; }
+    .order-row.drop-before { border-top:3px solid var(--green); }
+    .order-row.drop-after { border-bottom:3px solid var(--green); }
+    .drag-handle { cursor:grab; color:#95a08e; font-size:21px; line-height:1; user-select:none; }
+    .order-title { flex:1; }
+    .order-title small { display:block; font-size:9px; color:#899181; }
+    .editor-footer { border-top:1px solid var(--line); padding:13px 20px; display:flex; align-items:center; justify-content:space-between; color:#7b8875; font-size:10px; }
+    .score-card { margin-top:16px; background:#eaf0e3; border:1px solid #dce5d4; border-radius:10px; padding:17px 20px; }
+    .score-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .score-heading h2 { font-size:12px; font-weight:700; }
+    .score-tag { font-size:9px; border:1px solid #cbd9c1; border-radius:4px; padding:1px 6px; color:#6a7c5c; }
+    .score-number-row { display:flex; align-items:baseline; justify-content:space-between; margin-top:8px; }
+    .score-number { font-size:33px; line-height:1.4; letter-spacing:-1px; font-weight:700; }
+    .score-number span { font-size:15px; font-weight:400; color:#72856c; }
+    .score-label { font-size:11px; color:#53704a; }
+    .score-track { height:6px; width:100%; border-radius:5px; overflow:hidden; background:#d8e1d0; margin:8px 0 11px; }
+    .score-fill { height:100%; width:0; background:#4f7c45; border-radius:5px; transition:width .35s,background .35s; }
+    .score-tips { padding:0 15px 0 0; margin:0; color:#64765c; font-size:10px; line-height:1.9; }
+    .score-disclaimer { color:#78816e; font-size:9px; line-height:1.75; margin-top:10px; }
+    .score-details-link { border:0; padding:0; background:none; font-size:10px; color:#405f37; margin-top:11px; text-decoration:underline; text-underline-offset:3px; }
+    .preview-zone { min-width:0; }
+    .preview-toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px; }
+    .preview-heading { display:flex; align-items:center; gap:9px; font-size:12px; font-weight:700; }
+    .preview-heading small { font-size:10px; font-weight:400; color:#899082; margin-inline-start:3px; }
+    .preview-actions { display:flex; align-items:center; gap:6px; }
+    .preview-meta { color:#818b7e; font-size:10px; }
+    .zoom-controls { display:flex; align-items:center; gap:4px; padding:2px 4px; background:#fff; border:1px solid var(--line); border-radius:6px; }
+    .zoom-controls button { background:none; border:0; width:25px; height:27px; font-size:15px; }
+    .zoom-controls output { font-size:10px; min-width:32px; text-align:center; direction:ltr; }
+    .preview-stage { background:#e8ebe3; border:1px solid #e1e5dc; border-radius:10px; padding:27px 24px; min-height:680px; overflow:auto; max-height:calc(100vh - 263px); scrollbar-width:thin; scrollbar-color:#c5cfc0 transparent; }
+    .paper-sizer { direction:ltr; margin:0 auto; position:relative; }
+    /* Resume content is a single semantic column. No tables, images, or icon fonts. */
+    .resume { --primary:#276354; --cv-font:Arial,Helvetica,sans-serif; width:210mm; min-height:297mm; background:white; color:#242c29; padding:15mm 17mm; font-family:var(--cv-font); font-size:10.5pt; line-height:1.55; text-align:start; transform-origin:top left; box-shadow:0 4px 24px #24382e16; overflow-wrap:anywhere; }
+    .resume h1 { font-size:28pt; font-weight:700; line-height:1.25; color:#203f35; margin:0 0 5pt; }
+    .resume .cv-role { font-size:12pt; color:var(--primary); margin-bottom:9pt; font-weight:600; }
+    .resume .cv-contact { font-size:9pt; line-height:1.75; color:#515f56; margin:0; }
+    .resume .cv-contact a { color:inherit; text-decoration:none; }
+    .resume .cv-contact bdi { unicode-bidi:isolate; }
+    .resume .cv-contact .contact-separator { padding:0 6pt; color:#a1aba3; }
+    .resume .cv-section { margin-top:16pt; }
+    .resume h2 { color:var(--primary); font-size:11.5pt; font-weight:700; line-height:1.4; padding-bottom:5pt; margin:0 0 8pt; border-bottom:1px solid var(--primary); break-after:avoid; page-break-after:avoid; }
+    .resume h3 { font-size:10.5pt; line-height:1.5; margin:0; font-weight:700; break-after:avoid; }
+    .resume .cv-entry { margin-bottom:11pt; }
+    .resume .cv-entry:last-child { margin-bottom:0; }
+    .resume .cv-meta { color:#647067; font-size:9pt; margin:2pt 0 5pt; break-after:avoid; }
+    .resume p { margin:0; white-space:pre-line; }
+    .resume ul { list-style:disc outside; padding:0; margin:4pt 13pt 0 0; }
+    .resume[dir="ltr"] ul { margin:4pt 0 0 13pt; }
+    .resume li { padding-inline-start:2pt; margin:3pt 0; orphans:2; widows:2; }
+    .resume a { text-underline-offset:2px; color:var(--primary); }
+    .resume .cv-links { font-size:9pt; margin-top:3pt; }
+    .resume.template-classic { --cv-font:"Times New Roman",Times,serif; }
+    .template-classic .cv-header { text-align:center; padding-bottom:10pt; border-bottom:1px solid #555; }
+    .template-classic h1 { color:#252c29; font-size:27pt; }
+    .template-classic h2 { border-bottom:1px solid #bfc7be; }
+    .template-modern .cv-header { border-inline-start:3pt solid var(--primary); padding-inline-start:13pt; }
+    .template-modern h2 { border-bottom:1px solid #dfe6dc; border-inline-start:2pt solid var(--primary); padding-inline-start:8pt; }
+    .template-corporate .cv-header { border-bottom:2pt solid var(--primary); padding-bottom:12pt; }
+    .template-corporate h1 { color:var(--primary); font-size:25pt; }
+    .template-corporate h2 { border-bottom:1px solid var(--primary); border-top:1px solid #d6ddd4; padding:6pt 0; letter-spacing:.1pt; }
+    .resume .cv-body { min-width:0; }
+    .resume .cv-section { min-width:0; }
+    .resume[dir] .cv-languages { list-style:none; margin:0; padding:0; }
+    .resume .cv-languages li { padding:0; margin:3pt 0; }
+    /* Additional ATS layouts remain single-column and text-based. */
+    .template-executive .cv-header { border-top:5pt solid var(--primary); padding-top:14pt; padding-bottom:9pt; border-bottom:1px solid #cbd3cf; }
+    .template-executive h1 { color:var(--primary); font-size:29pt; }
+    .template-executive h2 { border-bottom:2px solid var(--primary); padding-bottom:4pt; }
+    .template-clean .cv-header { padding-bottom:10pt; }
+    .template-clean h1 { color:var(--primary); font-weight:400; font-size:30pt; }
+    .template-clean h2 { border:0; padding-bottom:4pt; }
+    .template-clean .cv-section { border-top:1px solid #dbe0dc; padding-top:12pt; margin-top:13pt; }
+    .resume.template-compact { font-size:10pt; line-height:1.42; }
+    .template-compact h1 { font-size:24pt; }
+    .template-compact .cv-header { border-bottom:2pt solid var(--primary); padding-bottom:7pt; }
+    .template-compact .cv-section { margin-top:11pt; }
+    .template-compact h2 { margin-bottom:5pt; padding-bottom:3pt; font-size:10.5pt; }
+    .template-compact .cv-entry { margin-bottom:7pt; }
+    .template-compact li { margin-block:2pt; }
+    /* Creative layouts deliberately offer visual treatments beyond the ATS set. */
+    .creative-resume { --tint:#f3f6f2; --tint-strong:#dae5d9; }
+    .creative-resume .cv-header { margin-bottom:4pt; }
+    .template-lumen .cv-header { background:var(--primary); padding:22pt 20pt; border-radius:3pt; }
+    .template-lumen .cv-header h1,.template-lumen .cv-header .cv-role,.template-lumen .cv-header .cv-contact,.template-lumen .cv-header a,.template-lumen .contact-separator { color:#fff; }
+    .template-lumen h1 { font-size:31pt; }
+    .template-lumen h2 { border:0; padding:6pt 9pt; background:var(--tint); border-inline-start:4pt solid var(--primary); }
+    .template-noir .cv-header { background:#20242b; padding:23pt 20pt; border-bottom:5pt solid var(--primary); }
+    .template-noir .cv-header h1,.template-noir .cv-header .cv-role,.template-noir .cv-header .cv-contact,.template-noir .cv-header a,.template-noir .contact-separator { color:#fff8e9; }
+    .template-noir h2 { border:0; border-inline-start:4pt solid var(--primary); padding-inline-start:10pt; }
+    .template-noir .cv-section { border-bottom:1px solid #e6e3dc; padding-bottom:11pt; }
+    .template-editorial .cv-header { border-bottom:4pt double var(--primary); padding-bottom:15pt; }
+    .template-editorial h1 { font-family:Georgia,"Times New Roman",serif; font-size:36pt; font-weight:400; color:var(--primary); }
+    .template-editorial h2 { font-family:Georgia,"Times New Roman",serif; font-size:14pt; border:0; padding:0; }
+    .template-editorial .cv-section { border-bottom:1px solid #cbd1ca; padding-bottom:12pt; }
+    .template-atelier .cv-header { background:var(--tint); border-inline-end:10pt solid var(--primary); padding:19pt 18pt; }
+    .template-atelier h1 { color:var(--primary); font-size:31pt; }
+    .template-atelier .cv-body { border-inline-start:4pt solid var(--primary); padding-inline-start:17pt; }
+    .template-atelier h2 { display:inline-block; border-bottom:3pt solid var(--tint-strong); padding-bottom:3pt; }
+    .template-ribbon .cv-header { border-block:3pt solid var(--primary); padding-block:16pt; text-align:center; }
+    .template-ribbon h1 { color:var(--primary); }
+    .template-ribbon h2 { color:#fff; background:var(--primary); padding:7pt 12pt; border:0; border-radius:2pt; }
+    .template-ribbon .cv-entry { padding-inline:6pt; }
+    .template-sage .cv-header { text-align:center; padding:15pt 10pt; border-bottom:2pt solid var(--primary); }
+    .template-sage h1 { color:var(--primary); font-size:29pt; }
+    .template-sage .cv-section { background:var(--tint); border:1px solid var(--tint-strong); border-radius:11pt; padding:13pt 16pt; margin-top:12pt; }
+    .template-sage h2 { border-bottom:1px solid var(--tint-strong); }
+    .template-terra .cv-header { background:#faf5e9; text-align:center; padding:22pt 17pt; border-block:2pt solid var(--primary); }
+    .template-terra h1 { color:var(--primary); font:32pt/1.3 Georgia,"Times New Roman",serif; }
+    .template-terra h2 { text-align:center; border-bottom:1px solid var(--tint-strong); font-size:12pt; padding:5pt; }
+    .template-terra .cv-section { padding:2pt 8pt; }
+    .template-split .cv-header { background:var(--primary); padding:19pt 20pt; border-radius:12pt 12pt 0 0; }
+    .template-split .cv-header h1,.template-split .cv-header .cv-role,.template-split .cv-header .cv-contact,.template-split .cv-header a,.template-split .contact-separator { color:#fff; }
+    .template-split .cv-body,.template-folio .cv-body { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12pt; margin-top:14pt; align-items:start; }
+    .template-split .cv-section,.template-folio .cv-section { margin:0; }
+    .template-split [data-cv-section="summary"],.template-split [data-cv-section="experience"],.template-split [data-cv-section="projects"],.template-folio [data-cv-section="summary"],.template-folio [data-cv-section="experience"],.template-folio [data-cv-section="projects"] { grid-column:1 / -1; }
+    .template-split .cv-section { border:1px solid var(--tint-strong); border-top:3pt solid var(--primary); padding:12pt; background:var(--tint); }
+    .template-split h2 { border:0; padding:0; }
+    .template-folio .cv-header { padding-block:10pt 17pt; border-bottom:6pt solid var(--primary); }
+    .template-folio h1 { font-size:33pt; color:var(--primary); font-weight:400; }
+    .template-folio .cv-body { gap:17pt; }
+    .template-folio h2 { font-size:12pt; padding-bottom:7pt; border-bottom:2px solid var(--tint-strong); }
+    .template-blueprint .cv-header { padding:20pt 16pt; border:1px solid var(--primary); background:repeating-linear-gradient(0deg,transparent 0 17pt,var(--tint-strong) 17pt 17.4pt),var(--tint); }
+    .template-blueprint h1 { color:var(--primary); font-size:29pt; }
+    .template-blueprint .cv-role,.template-blueprint .cv-contact { background:var(--tint); padding-inline:3pt; }
+    .template-blueprint h2 { border:1px solid var(--primary); background:var(--tint); padding:6pt 9pt; }
+    .template-blueprint .cv-section { border-bottom:1px dashed var(--tint-strong); padding-bottom:10pt; }
+    .template-frame .cv-header { text-align:center; border:4pt double var(--primary); border-bottom:0; padding:20pt 14pt 7pt; }
+    .template-frame h1 { color:var(--primary); font-family:Georgia,"Times New Roman",serif; }
+    .template-frame .cv-body { border:4pt double var(--primary); border-top:0; padding:1pt 15pt 18pt; }
+    .template-frame h2 { text-align:center; border-bottom:1px solid var(--tint-strong); font-family:Georgia,"Times New Roman",serif; }
+    .template-rose .cv-header { background:var(--tint); border-radius:30pt 3pt; padding:23pt 20pt; border-bottom:4pt solid var(--tint-strong); }
+    .template-rose h1 { color:var(--primary); font-size:31pt; }
+    .template-rose h2 { display:inline-block; background:var(--tint); border:0; border-radius:15pt; padding:5pt 15pt; min-width:120pt; }
+    .template-rose .cv-section { border-bottom:1px solid var(--tint-strong); padding-bottom:12pt; }
+    .creative-note { font-size:11px; padding:9px 12px; margin-bottom:12px; border:1px solid #e5dcca; border-radius:6px; background:#f8f3e8; color:#786849; }
+    .preview-footer { display:flex; justify-content:space-between; gap:12px; margin-top:12px; color:#899082; font-size:10px; }
+    .empty-preview { color:#87917f; padding:60px 15px; text-align:center; font:13px/1.8 Arial,Helvetica,sans-serif; }
+    dialog { width:min(570px,calc(100% - 32px)); max-height:85vh; overflow:auto; border:1px solid #dbe2d5; padding:28px; margin:auto; border-radius:13px; background:#fff; color:var(--ink); box-shadow:0 25px 100px #10231830; }
+    dialog::backdrop { background:#14271e66; backdrop-filter:blur(3px); }
+    .dialog-heading { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:15px; }
+    .dialog-heading h2 { font-size:20px; font-weight:700; }
+    .dialog-copy { font-size:12px; line-height:1.95; color:#6b7764; }
+    .dialog-copy p { margin-bottom:12px; }
+    .dialog-copy ol { padding-inline-start:20px; }
+    .dialog-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:22px; }
+    .audit-row { display:flex; align-items:start; justify-content:space-between; gap:15px; border-bottom:1px solid var(--line); padding:10px 0; font-size:12px; }
+    .audit-row small { display:block; color:#7c8877; font-size:10px; margin-top:2px; }
+    .audit-points { direction:ltr; white-space:nowrap; font-weight:700; color:#4e7650; }
+    .keyword-result { padding:11px; background:var(--soft); font-size:11px; border-radius:6px; margin-top:10px; }
+    .toast { position:fixed; bottom:25px; left:50%; transform:translateX(-50%); color:white; background:#243f34; border:1px solid #627c5c; border-radius:8px; padding:11px 20px; font-size:12px; z-index:20; box-shadow:0 6px 20px #20382925; max-width:90vw; text-align:center; }
+    .mobile-switch { display:none; }
+    .document-bar { max-width:1504px; margin:0 auto 20px; padding:13px 18px; background:#fff; border:1px solid var(--line); border-radius:9px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .document-caption { min-width:0; }
+    .document-caption strong { display:block; font-size:13px; overflow-wrap:anywhere; }
+    .document-caption small { font-size:10px; color:var(--muted); }
+    .document-actions,.library-actions { display:flex; gap:7px; flex-wrap:wrap; }
+    .document-actions .btn { min-height:35px; padding:7px 12px; }
+    .library-dialog { width:min(680px,calc(100% - 32px)); }
+    .library-list { display:grid; gap:10px; margin-top:17px; }
+    .library-item { padding:14px; border:1px solid var(--line); border-radius:8px; background:#fafbf8; }
+    .library-item h3 { font-size:14px; font-weight:700; overflow-wrap:anywhere; }
+    .library-item p { font-size:10px; color:var(--muted); margin:4px 0 10px; }
+    .library-actions .btn { min-height:32px; padding:5px 10px; font-size:11px; }
+    .library-empty { border:1px dashed #cbd4c5; border-radius:8px; padding:26px 18px; font-size:12px; color:#768273; text-align:center; }
+    .current-badge { font-size:9px; color:var(--green); background:#e8f0e3; padding:2px 7px; border-radius:4px; margin-inline-start:7px; }
+    .saved-template-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+    .saved-template-actions .btn { font-size:11px; min-height:34px; padding:6px 10px; }
+    .view-bar { max-width:1504px; margin:0 auto 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .view-modes { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .view-modes .btn { min-height:36px; padding:7px 12px; }
+    .view-modes [data-mode][aria-pressed="true"] { background:var(--ink); color:white; border-color:var(--ink); }
+    .quick-access { display:flex; align-items:center; gap:8px; font-size:11px; }
+    .quick-access select { max-width:190px; min-width:0; border:1px solid #d7dfd2; background:white; border-radius:6px; padding:8px; color:var(--ink); }
+    .quick-access .btn { min-height:36px; padding:7px 12px; }
+    .preview-hint { color:#6d7e67; font-size:10px; margin:-4px 0 12px; }
+    @media screen {
+      html:fullscreen { overflow:auto; background:var(--canvas); }
+      body.is-reading .workspace-heading,body.is-reading .document-bar,body.is-reading .mobile-switch,body.is-reading .sidebar { display:none; }
+      body.is-reading .view-bar { margin-top:20px; }
+      body.is-reading .workspace { grid-template-columns:minmax(0,1fr); max-width:1120px; }
+      body.is-reading .preview-zone { display:block; }
+      body.is-reading .preview-stage { max-height:none; min-height:0; }
+      body:not(.is-reading) .resume [data-cv-section]:hover { outline:1px dashed #8ca581; outline-offset:5px; }
+      details.form-section.quick-highlight { background:#f0f5e9; border-radius:7px; outline:3px solid #dce8d4; }
+    }
+    @media (max-width:1580px) { .view-bar { margin-inline:38px; } }
+    @media (max-width:1100px) { .view-bar { margin-inline:20px; } }
+    @media (max-width:800px) { .view-bar { margin-inline:14px; gap:10px; } .view-modes { width:100%; } .view-modes .btn { flex:1; padding:7px 8px; font-size:11px; } .quick-access { width:100%; } .quick-access select { flex:1; max-width:none; } }
+    @media (max-width:1580px) { .document-bar { margin-inline:38px; } }
+    @media (max-width:1100px) { .document-bar { margin-inline:20px; } }
+    @media (max-width:800px) { .document-bar { margin:0 14px 15px; padding:13px; flex-direction:column; align-items:stretch; } .document-actions { display:grid; grid-template-columns:1fr 1fr; } .document-actions .btn { font-size:11px; } .document-caption { margin-bottom:3px; } }
+    @media (min-width:1600px) { .workspace { grid-template-columns:410px minmax(0,1fr); } }
+    @media (max-width:1100px) { .workspace { padding-inline:20px; gap:18px; grid-template-columns:340px minmax(0,1fr); } .app-header { padding-inline:22px; } .workspace-heading { padding-inline:22px; } .preview-stage { padding:20px 14px; } .header-caption,.header-divider { display:none; } .privacy-note { font-size:10px; } }
+    @media (max-width:800px) { .app-header { height:70px; padding-inline:17px; } .header-actions { gap:6px; } .header-actions .save-state,.header-actions .btn-quiet { display:none; } .brand-name { font-size:24px; } .brand small { font-size:9px; } .btn { padding:9px 12px; } .workspace-heading { padding:23px 18px 17px; } .workspace-heading h1 { font-size:22px; } .privacy-note { display:none; } .workspace { display:block; padding:0 14px 24px; } .editor-scroll { max-height:none; min-height:0; } .preview-stage { max-height:none; min-height:460px; padding:16px 10px; } .preview-zone { display:none; } body.show-preview .preview-zone { display:block; } body.show-preview .sidebar { display:none; } .mobile-switch { display:flex; background:#e6eae0; padding:4px; border-radius:7px; margin:0 14px 18px; } .mobile-switch button { flex:1; padding:9px; border:0; background:transparent; border-radius:5px; font-size:12px; } .mobile-switch button[aria-pressed="true"] { background:white; box-shadow:0 1px 3px #344c2310; font-weight:700; } .preview-heading small { display:none; } .preview-toolbar { padding-top:3px; } .editor-footer { padding:13px 20px; } .score-card { margin-bottom:15px; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none !important; scroll-behavior:auto !important; } }
+    @page { size:A4 portrait; margin:15mm 17mm; }
+    @media print {
+      html,body { position:static !important; margin:0 !important; padding:0 !important; width:auto !important; height:auto !important; overflow:visible !important; background:white !important; }
+      body>.app-header,body>.workspace-heading,.sidebar,.mobile-switch,.preview-toolbar,.preview-footer,dialog,.toast,.no-print { display:none !important; }
+      .workspace,.preview-zone,.preview-stage,.paper-sizer { display:block !important; margin:0 !important; padding:0 !important; border:0 !important; border-radius:0 !important; width:auto !important; height:auto !important; max-height:none !important; min-height:0 !important; overflow:visible !important; background:white !important; }
+      .resume { width:100% !important; min-height:0 !important; height:auto !important; padding:0 !important; margin:0 !important; transform:none !important; box-shadow:none !important; border:0 !important; font-size:10.5pt; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .resume .cv-section { break-inside:auto; }
+      .resume .cv-entry { break-inside:auto; }
+      .resume h2,.resume h3,.resume .cv-meta { break-after:avoid; page-break-after:avoid; }
+      .resume p,.resume li { orphans:3; widows:3; }
+      .resume a { color:inherit; text-decoration:none; }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-emerald-100 selection:text-emerald-950">
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><svg class="icon" style="width:24px;height:24px" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6"/></svg></div>
+      <div><div class="brand-name">سِيرة<span style="color:#9aa972">.</span></div><small>خطوتك الأولى لفرص أكبر</small></div>
+      <div class="header-divider"></div><span class="header-caption">مساحة صغيرة، لمستقبل كبير.</span>
+    </div>
+    <div class="header-actions">
+      <span id="save-state" class="save-state" role="status">محفوظ على جهازك</span>
+      <button type="button" class="btn btn-quiet" id="help-button">دليل الاستخدام</button>
+      <button type="button" class="btn btn-primary" id="print-button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v5h14v-5"/></svg>تحميل بصيغة PDF</button>
+    </div>
+  </header>
+
+  <div class="workspace-heading">
+    <div><div class="eyebrow">YOUR NEXT CHAPTER</div><h1>خبراتك تستحق أن تُروى جيدًا.</h1><p>اكتب سيرتك، اجعلها تشبهك، واستعد لفرصتك القادمة.</p></div>
+    <div class="privacy-note"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="10" width="12" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg>بياناتك تُحفظ محليًا في هذا المتصفح</div>
+  </div>
+  <section class="document-bar no-print" aria-label="حفظ السيرة واستعادتها">
+    <div class="document-caption"><strong id="document-name">مسودة السيرة</strong><small id="document-hint">احفظ سيرتك باسم للعودة إليها لاحقًا.</small></div>
+    <div class="document-actions">
+      <button type="button" class="btn btn-primary" id="save-document-button">حفظ السيرة</button>
+      <button type="button" class="btn" id="library-button">سيري المحفوظة</button>
+      <button type="button" class="btn" id="backup-button">تنزيل نسخة قابلة للتعديل</button>
+      <button type="button" class="btn" id="import-button">استيراد نسخة</button>
+    </div>
+    <input type="file" id="import-file" accept=".json,application/json" aria-label="ملف السيرة أو القالب" hidden>
+  </section>
+  <nav class="view-bar no-print" aria-label="وضع العرض والوصول السريع">
+    <div class="view-modes" role="group" aria-label="وضع مساحة العمل">
+      <button type="button" class="btn" data-mode="edit" aria-pressed="true">وضع التحرير</button>
+      <button type="button" class="btn" data-mode="read" aria-pressed="false">وضع القراءة</button>
+      <button type="button" class="btn" id="fullscreen-button" aria-pressed="false">ملء الشاشة</button>
+    </div>
+    <div class="quick-access">
+      <label for="quick-section">وصول سريع</label>
+      <select id="quick-section" aria-label="القسم المطلوب تحريره">
+        <option value="personal">البيانات الشخصية</option><option value="summary">الملخص المهني</option><option value="experience">الخبرات المهنية</option><option value="education">التعليم</option><option value="skills">المهارات</option><option value="projects">المشاريع</option><option value="courses">الدورات والشهادات</option><option value="languages">اللغات</option>
+      </select>
+      <button type="button" class="btn" id="quick-edit-button">تحرير القسم ←</button>
+    </div>
+  </nav>
+  <div class="mobile-switch" aria-label="تبديل مساحة العمل">
+    <button type="button" data-mobile="editor" aria-pressed="true">تعديل السيرة</button>
+    <button type="button" data-mobile="preview" aria-pressed="false">معاينة السيرة</button>
+  </div>
+
+  <main class="workspace">
+    <aside class="sidebar" aria-label="لوحة التحكم">
+      <section class="editor">
+        <div class="editor-heading"><h2>لنصنع سيرتك</h2><span class="step-label" id="panel-label">ابدأ بقصتك المهنية</span></div>
+        <div class="tabs" role="tablist" aria-label="أدوات السيرة">
+          <button type="button" id="tab-content" class="tab" role="tab" aria-selected="true" aria-controls="panel-content" tabindex="0"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 4 5 5-11 11H4v-5zM13 6l5 5"/></svg>المحتوى</button>
+          <button type="button" id="tab-design" class="tab" role="tab" aria-selected="false" aria-controls="panel-design" tabindex="-1"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 10v10"/></svg>التصميم</button>
+          <button type="button" id="tab-order" class="tab" role="tab" aria-selected="false" aria-controls="panel-order" tabindex="-1"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16m-3-3 3 3 3-3M17 20V4m-3 3 3-3 3 3"/></svg>الترتيب</button>
+        </div>
+        <div class="editor-scroll" id="editor-scroll">
+          <div role="tabpanel" id="panel-content" aria-labelledby="tab-content">
+            <div class="demo-note" id="demo-note"><span>بيانات توضيحية لتلهمك. ابدأ ببياناتك.</span><button class="text-button" type="button" data-new>سيرة جديدة</button></div>
+            <form id="resume-form" novalidate autocomplete="on"></form>
+          </div>
+          <div role="tabpanel" id="panel-design" class="panel-content" aria-labelledby="tab-design" hidden>
+            <p class="panel-intro">اختر طريقة تقديم قصتك. جميع القوالب تستخدم البيانات نفسها.</p>
+            <div class="template-categories" role="group" aria-label="نوع القوالب">
+              <button type="button" data-category="ats" aria-pressed="true" aria-controls="template-gallery">قوالب ATS <span>6</span></button>
+              <button type="button" data-category="creative" aria-pressed="false" aria-controls="template-gallery">قوالب إبداعية <span>12</span></button>
+            </div>
+            <p class="category-description" id="category-description">قوالب واضحة بعمود واحد ونص قابل للقراءة الآلية.</p>
+            <p class="active-template" id="active-template" role="status"></p>
+            <div class="template-grid" id="template-gallery" role="group" aria-label="القوالب المتاحة"></div>
+            <p class="field-hint palette-note">اختيار قالب يطبّق لونه المقترح. يمكنك تخصيص اللون أدناه.</p>
+            <h3 class="design-label">لون التفاصيل</h3>
+            <div class="swatches">
+              <button type="button" class="swatch" style="--swatch:#276354" data-color="#276354" aria-label="أخضر هادئ" aria-pressed="true"></button>
+              <button type="button" class="swatch" style="--swatch:#284b70" data-color="#284b70" aria-label="أزرق كحلي" aria-pressed="false"></button>
+              <button type="button" class="swatch" style="--swatch:#735b3c" data-color="#735b3c" aria-label="بني دافئ" aria-pressed="false"></button>
+              <button type="button" class="swatch" style="--swatch:#614969" data-color="#614969" aria-label="بنفسجي" aria-pressed="false"></button>
+              <button type="button" class="swatch" style="--swatch:#333333" data-color="#333333" aria-label="رمادي داكن" aria-pressed="false"></button>
+              <label class="color-control"><span class="color-value" id="color-value">#276354</span><input type="color" id="primary-color" value="#276354" aria-label="اختيار لون مخصص"></label>
+            </div>
+            <p class="field-hint" id="color-hint">يطبّق اللون على العناوين والخطوط فقط.</p>
+            <hr class="design-divider">
+            <label class="field"><span class="field-label">لغة عناوين السيرة واتجاهها</span><select id="resume-language"><option value="ar">العربية — من اليمين إلى اليسار</option><option value="en">English — Left to right</option></select><span class="field-hint">يتغيّر اتجاه السيرة وعناوينها؛ النص الذي كتبته لا يُترجم.</span></label>
+            <p class="field-hint">قوالب ATS بعمود واحد. القوالب الإبداعية تستخدم تكوينات بصرية متنوعة، ومنها تصميمان بعمودين.</p>
+            <hr class="design-divider">
+            <h3 class="design-label">قوالبي المحفوظة</h3>
+            <label class="field"><span class="field-label">اختر تصميمًا حفظته سابقًا</span><select id="saved-template-select"><option value="">لا توجد قوالب محفوظة بعد</option></select></label>
+            <div class="saved-template-actions">
+              <button type="button" class="btn btn-primary" id="save-template-button">حفظ التصميم كقالب</button>
+              <button type="button" class="btn" id="apply-template-button" disabled>تطبيق القالب</button>
+              <button type="button" class="btn" id="export-template-button" disabled>تنزيل القالب</button>
+              <button type="button" class="btn btn-danger" id="delete-template-button" disabled>حذف</button>
+            </div>
+            <p class="field-hint">يحفظ القالب اللون والتصميم واللغة وترتيب الأقسام وإظهارها. تبقى بيانات السيرة كما هي عند تطبيقه.</p>
+          </div>
+          <div role="tabpanel" id="panel-order" class="panel-content" aria-labelledby="tab-order" hidden>
+            <p class="panel-intro">قدّم ما يعبّر عنك أكثر. اسحب الأقسام لترتيبها أو استخدم سهمي التحريك.</p>
+            <ul class="order-list" id="order-list" aria-label="ترتيب أقسام السيرة"></ul>
+            <p class="field-hint">البيانات الشخصية ثابتة في الأعلى. الأقسام الفارغة أو المخفية لا تظهر في السيرة.</p>
+            <div id="reorder-status" role="status" class="field-hint"></div>
+          </div>
+        </div>
+        <div class="editor-footer"><span>تغييراتك تظهر مباشرة في المعاينة</span><button type="button" class="text-button" data-new>بدء من جديد</button></div>
+      </section>
+
+      <section class="score-card" aria-label="فحص الجاهزية لأنظمة ATS">
+        <div class="score-heading"><h2 id="score-heading-text">مؤشر جاهزية السيرة ATS</h2><span class="score-tag">تقديري</span></div>
+        <div class="score-number-row"><div class="score-number" dir="ltr"><output id="score-number">0</output><span> / 100</span></div><span class="score-label" id="score-label">ابدأ بإضافة بياناتك</span></div>
+        <div class="score-track" id="score-progress" role="progressbar" aria-label="درجة الجاهزية التقريبية" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="score-fill" id="score-fill"></div></div>
+        <ul class="score-tips" id="score-tips"></ul>
+        <p class="score-disclaimer" id="score-disclaimer">فحص محلي للمحتوى والتنسيق، وليس اختبارًا لنظام توظيف فعلي أو ضمانًا للقبول.</p>
+        <button type="button" class="score-details-link" id="audit-button">تفاصيل الفحص والكلمات المفتاحية ←</button>
+      </section>
+    </aside>
+
+    <section class="preview-zone" aria-label="معاينة السيرة الذاتية">
+      <div class="preview-toolbar"><div class="preview-heading"><span class="live-dot"></span>معاينة مباشرة <small>كل تعديل، أقرب إليك.</small></div><div class="preview-actions"><span class="preview-meta">A4</span><div class="zoom-controls"><button type="button" id="zoom-out" aria-label="تصغير المعاينة">−</button><output id="zoom-value">100%</output><button type="button" id="zoom-in" aria-label="تكبير المعاينة">+</button><button type="button" id="zoom-fit" aria-label="ملاءمة المعاينة للشاشة" title="ملاءمة للشاشة">↔</button></div></div></div>
+      <p class="preview-hint no-print" id="preview-hint">انقر مرتين على أي قسم في المعاينة لفتح حقوله، أو اختره من «وصول سريع».</p>
+      <p class="creative-note no-print" id="creative-note" hidden>قالب إبداعي للمشاركة المباشرة. مؤشر المحتوى لا يقيّم توافق هذا التصميم مع ATS.</p>
+      <div class="preview-stage" id="preview-stage"><div class="paper-sizer" id="paper-sizer"><article class="resume template-modern" id="resume" dir="rtl" lang="ar" aria-label="السيرة الذاتية"></article></div></div>
+      <div class="preview-footer"><span id="word-count">0 كلمة · نص قابل للتحديد والنسخ</span><button type="button" class="text-button" id="text-download">تنزيل نسخة نصية</button></div>
+    </section>
+  </main>
+
+  <dialog id="library-dialog" class="library-dialog" aria-labelledby="library-title">
+    <div class="dialog-heading"><h2 id="library-title">سيري المحفوظة</h2><button type="button" class="icon-btn" data-close aria-label="إغلاق">×</button></div>
+    <p class="dialog-copy">افتح أي سيرة لمتابعة تعديلها. التغييرات تُحفظ تلقائيًا في السيرة المفتوحة، وتُحفظ المسودة الحالية قبل الانتقال إلى سيرة أخرى.</p>
+    <p class="field-hint">هذه المكتبة في هذا المتصفح فقط. استخدم النسخة القابلة للتعديل لنقل سيرتك إلى جهاز آخر أو الاحتفاظ بها خارج المتصفح.</p>
+    <div id="library-list" class="library-list"></div>
+    <p id="library-message" class="field-error" role="status"></p>
+  </dialog>
+  <dialog id="save-document-dialog" aria-labelledby="save-document-title">
+    <div class="dialog-heading"><h2 id="save-document-title">حفظ السيرة الذاتية</h2><button type="button" class="icon-btn" data-close aria-label="إغلاق">×</button></div>
+    <form id="save-document-form">
+      <label class="field"><span class="field-label">اسم السيرة في مكتبتك</span><input id="document-title-input" type="text" maxlength="80" required placeholder="مثال: سيرتي — وظائف التسويق" dir="auto"></label>
+      <p class="dialog-copy" id="save-document-note">تُحفظ البيانات والتصميم معًا، ويمكنك فتح السيرة وتعديلها لاحقًا.</p>
+      <p class="field-error" id="save-document-error" role="status"></p>
+      <div class="dialog-actions"><button type="button" class="btn" data-close>إلغاء</button><button type="button" class="btn" id="save-copy-button">حفظ نسخة جديدة</button><button type="submit" class="btn btn-primary" id="save-document-confirm">حفظ السيرة</button></div>
+    </form>
+  </dialog>
+  <dialog id="save-template-dialog" aria-labelledby="save-template-title">
+    <div class="dialog-heading"><h2 id="save-template-title">حفظ قالبك الخاص</h2><button type="button" class="icon-btn" data-close aria-label="إغلاق">×</button></div>
+    <form id="save-template-form">
+      <label class="field"><span class="field-label">اسم القالب</span><input id="template-title-input" type="text" maxlength="80" required placeholder="مثال: تصميمي الرسمي" dir="auto"></label>
+      <p class="dialog-copy">سيُحفظ التصميم واللون واللغة وترتيب الأقسام وحالة إظهارها، لتطبيقها على أي سيرة لاحقًا.</p>
+      <p class="field-error" id="save-template-error" role="status"></p>
+      <div class="dialog-actions"><button type="button" class="btn" data-close>إلغاء</button><button type="submit" class="btn btn-primary">حفظ القالب</button></div>
+    </form>
+  </dialog>
+  <dialog id="delete-dialog" aria-labelledby="delete-title">
+    <div class="dialog-heading"><h2 id="delete-title">تأكيد الحذف</h2><button type="button" class="icon-btn" data-close aria-label="إغلاق">×</button></div>
+    <p id="delete-message" class="dialog-copy"></p>
+    <p id="delete-error" class="field-error" role="status"></p>
+    <div class="dialog-actions"><button type="button" class="btn" data-close>إلغاء</button><button type="button" class="btn btn-danger" id="delete-confirm">حذف من المكتبة</button></div>
+  </dialog>
+
+  <dialog id="help-dialog" aria-labelledby="help-title">
+    <div class="dialog-heading"><h2 id="help-title">سيرتك، خطوة بخطوة</h2><button type="button" class="icon-btn" data-close aria-label="إغلاق">×</button></div>
+    <div class="dialog-copy">
+      <ol><li>استبدل البيانات التوضيحية أو اختر «سيرة جديدة».</li><li>أضف الخبرات والتعليم والمشاريع. اكتب كل إنجاز في سطر مستقل، واستخدم أرقامًا حقيقية حين تتوفر.</li><li>اختر القالب واللون من «التصميم»، ثم رتّب أقسامك من «الترتيب». استخدم «حفظ التصميم كقالب» لإعادة استخدام هذه الإعدادات.</li><li>اختر «حفظ السيرة» وسمّها. ستجدها في «سيري المحفوظة»، وتتحدث تلقائيًا مع التعديل. لإنشاء إصدار مستقل، اختر «حفظ نسخة جديدة».</li><li>نزّل «نسخة قابلة للتعديل» بصيغة JSON. يمكنك فتحها لاحقًا عبر «استيراد نسخة»، حتى على جهاز آخر. يمكن أيضًا تنزيل القوالب واستيرادها من الأزرار نفسها.</li><li>راجع مؤشر الجاهزية، وأدخل كلمات إعلان الوظيفة لمقارنة وجودها في سيرتك.</li><li>اختر «تحميل بصيغة PDF»، ثم «حفظ بتنسيق PDF» في نافذة الطباعة. اختر ورق A4، ومقياس 100%، وأوقف رؤوس الصفحة وتذييلاتها.</li></ol>
+      <p>من «الدورات والشهادات» أضف اسم الدورة والجهة والتاريخ والساعات ورابط الشهادة. تُحفظ مع سيرتك، ويمكن إخفاء القسم أو نقله من «الترتيب».</p>
+      <p>من «اللغات» أضف كل لغة مع مستوى الإتقان وأي شهادة أو ملاحظة. تُعرض المستويات نصيًا بالعربية أو الإنجليزية حسب لغة السيرة؛ لا نستخدم نسب إتقان مبهمة.</p>
+      <p>يحتوي «التصميم» على مكتبتين: 6 قوالب ATS بعمود واحد، و12 قالبًا إبداعيًا بتكوينات بصرية مختلفة. تصفّح الفئتين دون تغيير السيرة، ثم اضغط القالب لتطبيقه ولونه المقترح. تحفظ القوالب جميع بياناتك وترتيب أقسامك. في القوالب الإبداعية، تعكس الدرجة جودة المحتوى فقط ولا تقيّم توافق التصميم مع ATS.</p>
+      <p>عند طباعة القوالب الإبداعية، فعّل «رسومات الخلفية» في إعدادات المتصفح للحفاظ على الترويسات والألوان، وراجع الصفحات في معاينة الطباعة قبل الحفظ.</p>
+      <p>في وضع التحرير، انقر مرتين على قسم في المعاينة لفتح حقوله مباشرة. على الهاتف أو بلوحة المفاتيح استخدم قائمة «وصول سريع» ثم «تحرير القسم». وضع القراءة يوسّع المعاينة ويتيح تحديد النص ونسخه. زر «ملء الشاشة» يعرض مساحة العمل كاملة في المتصفحات الداعمة؛ للخروج استخدم الزر نفسه أو Esc.</p>
+      <p>المكتبة محفوظة في هذا المتصفح فقط؛ مسح بياناته أو نقل ملف الصفحة قد يغيّر الوصول إليها. احتفظ بنسخة JSON خارج المتصفح لاستعادة جميع الحقول والتصميم. نسخ PDF وTXT للقراءة والتقديم، ولا تُستورد كحقول قابلة للتعديل هنا.</p>
+      <p>تحتاج مكتبة Tailwind اتصالًا بالإنترنت، بينما التنسيق الأساسي ووظائف السيرة مضمّنة في الملف.</p>
+      <p>الأداة تستخدم قواعد محلية واضحة دون نموذج ذكاء اصطناعي. لا توجد كلمات محظورة مشتركة بين جميع أنظمة ATS؛ العبارات العامة في الفحص ملاحظات تحريرية فقط. اقرأ <a href="https://support.greenhouse.io/hc/en-us/articles/200989175-Unsuccessful-resume-parse" target="_blank" rel="noopener noreferrer">إرشادات Greenhouse حول قراءة السير</a>.</p>
+    </div>
+  </dialog>
+  <dialog id="audit-dialog" aria-labelledby="audit-title">
+    <div class="dialog-heading"><h2 id="audit-title">ما وراء النتيجة</h2><button type="button" class="icon-btn" data-close aria-label="إغلاق">×</button></div>
+    <p class="dialog-copy" id="audit-intro">مجموع النقاط من 100. الأوزان تقديرية، والمراجعة تشمل الأقسام الظاهرة فقط. طول النص واكتمال الخبرة يعتمدان أيضًا على مسارك المهني.</p>
+    <div id="audit-results"></div>
+    <hr class="design-divider">
+    <label class="field"><span class="field-label">كلمات من إعلان الوظيفة (اختياري)</span><textarea id="target-keywords" rows="2" placeholder="مثال: تحليل البيانات، Excel، إدارة المشاريع"></textarea><span class="field-hint">افصل بينها بفاصلة أو سطر جديد. هذه مطابقة نصية مستقلة عن درجة الجاهزية، وليست تقييمًا لأهليتك.</span></label>
+    <div class="keyword-result" id="keyword-result" aria-live="polite">أضف كلمات من الوظيفة المستهدفة لبدء المقارنة.</div>
+  </dialog>
+  <dialog id="reset-dialog" aria-labelledby="reset-title">
+    <div class="dialog-heading"><h2 id="reset-title">مساحة لبداية جديدة</h2><button type="button" class="icon-btn" data-close aria-label="إغلاق">×</button></div>
+    <p class="dialog-copy">ستبدأ سيرة مستقلة فارغة بإعدادات التصميم الحالية. تُحفظ سيرتك الحالية في المكتبة قبل الانتقال، باستثناء المثال التوضيحي غير المعدّل.</p>
+    <p class="field-error" id="reset-error" role="status"></p>
+    <div class="dialog-actions"><button type="button" class="btn" data-close>إلغاء</button><button type="button" class="btn btn-primary" id="reset-confirm">إنشاء سيرة فارغة</button></div>
+  </dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <noscript><p style="padding:30px">يحتاج منشئ السيرة الذاتية إلى JavaScript. يرجى تفعيله في المتصفح.</p></noscript>
+  <script>
+  (() => {
+    'use strict';
+
+    // Local documents and design presets; no transmission of resume data.
+    const STORAGE_KEY = 'seera.resume.v1';
+    const DRAFT_KEY = 'seera.draft.v2';
+    const DOCUMENT_PREFIX = 'seera.document.v1.';
+    const TEMPLATE_PREFIX = 'seera.template.v1.';
+    const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
+    const SECTION_KEYS = ['summary', 'experience', 'education', 'skills', 'projects', 'courses', 'languages'];
+    const SECTION_NAMES = { summary:'الملخص المهني', experience:'الخبرات المهنية', education:'التعليم', skills:'المهارات', projects:'المشاريع', courses:'الدورات والشهادات', languages:'اللغات' };
+    const ENTRY_NAMES = {experience:'خبرة مهنية',education:'مؤهل تعليمي',projects:'مشروع',courses:'دورة أو شهادة',languages:'لغة'};
+    const TITLES = {
+      ar:{summary:'الملخص المهني',experience:'الخبرات المهنية',education:'التعليم',skills:'المهارات',projects:'المشاريع',courses:'الدورات والشهادات',languages:'اللغات',present:'حتى الآن'},
+      en:{summary:'Professional Summary',experience:'Professional Experience',education:'Education',skills:'Skills',projects:'Projects',courses:'Courses & Certifications',languages:'Languages',present:'Present'}
+    };
+    const SCHEMAS = {
+      experience:['role','company','location','start','end','bullets'],
+      education:['degree','school','location','start','end','details'],
+      projects:['name','role','url','start','end','bullets'],
+      courses:['name','provider','date','hours','credentialId','url','details'],
+      languages:['name','level','details']
+    };
+    const LANGUAGE_LEVELS = [
+      {id:'native',ar:'اللغة الأم',en:'Native'}, {id:'fluent',ar:'طليق',en:'Fluent'},
+      {id:'advanced',ar:'متقدم',en:'Advanced'}, {id:'intermediate',ar:'متوسط',en:'Intermediate'}, {id:'beginner',ar:'مبتدئ',en:'Beginner'},
+      {id:'a1',ar:'A1 — مبتدئ',en:'A1 — Beginner'}, {id:'a2',ar:'A2 — أساسي',en:'A2 — Elementary'},
+      {id:'b1',ar:'B1 — متوسط',en:'B1 — Intermediate'}, {id:'b2',ar:'B2 — فوق المتوسط',en:'B2 — Upper intermediate'},
+      {id:'c1',ar:'C1 — متقدم',en:'C1 — Advanced'}, {id:'c2',ar:'C2 — متمكن',en:'C2 — Proficient'}
+    ];
+    // A single catalog is shared by the gallery, validation, presets and exports.
+    const TEMPLATES = [
+      {id:'classic',category:'ats',name:'الكلاسيكي',description:'أكاديمي وبسيط',color:'#333333'},
+      {id:'modern',category:'ats',name:'الحديث',description:'خطوط جانبية رفيعة',color:'#276354'},
+      {id:'corporate',category:'ats',name:'الشركات',description:'رسمي ومنظم',color:'#284b70'},
+      {id:'executive',category:'ats',name:'التنفيذي',description:'ترويسة رسمية بارزة',color:'#304659'},
+      {id:'clean',category:'ats',name:'الواضح',description:'مساحات وفواصل هادئة',color:'#3b5b51'},
+      {id:'compact',category:'ats',name:'المختصر',description:'تباعد أقل للمحتوى',color:'#484552'},
+      {id:'lumen',category:'creative',name:'إشراقة',description:'ترويسة ملونة واسعة',color:'#1a6073'},
+      {id:'noir',category:'creative',name:'ليلي',description:'داكن بلمسات ذهبية',color:'#735b3c'},
+      {id:'editorial',category:'creative',name:'المجلة',description:'حروف كبيرة وخط مزدوج',color:'#703e3e'},
+      {id:'atelier',category:'creative',name:'مرسم',description:'حافة لونية غير متناظرة',color:'#694c78'},
+      {id:'ribbon',category:'creative',name:'شرائط',description:'عناوين بأشرطة ملونة',color:'#285f83'},
+      {id:'sage',category:'creative',name:'حديقة',description:'بطاقات ناعمة ومستديرة',color:'#3d674c'},
+      {id:'terra',category:'creative',name:'رمال',description:'درجات دافئة وتوسيط',color:'#935037'},
+      {id:'split',category:'creative',name:'أفق',description:'عمودان وبطاقات واضحة',color:'#2b596c'},
+      {id:'folio',category:'creative',name:'محفظة',description:'عمودان وعناوين رشيقة',color:'#5b4f72'},
+      {id:'blueprint',category:'creative',name:'مخطط',description:'تفاصيل هندسية دقيقة',color:'#31588c'},
+      {id:'frame',category:'creative',name:'إطار',description:'حدود مزدوجة أنيقة',color:'#7c6039'},
+      {id:'rose',category:'creative',name:'وردي',description:'بانر ناعم وعناوين منحنية',color:'#954b66'}
+    ];
+    const templateInfo = id => TEMPLATES.find(t=>t.id===id)||TEMPLATES[1];
+    const isCreative = () => templateInfo(state.template).category==='creative';
+    let templateCategory='ats';
+    const $ = id => document.getElementById(id);
+    const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const uid = () => globalThis.crypto?.randomUUID?.() || `id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    const splitItems = value => String(value).split(/[,،;؛\n]+/).map(s => s.trim()).filter(Boolean);
+    const splitLines = value => String(value).split(/\n/).map(s => s.replace(/^\s*[-•]\s*/, '').trim()).filter(Boolean);
+    const wordCount = value => (String(value).match(/[\p{L}\p{N}]+(?:[’'\-][\p{L}\p{N}]+)*/gu) || []).length;
+    const normalText = value => String(value).normalize('NFKC').toLowerCase().replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/\s+/g,' ').trim();
+    const validEmail = value => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+    const latinDigits = value => value.replace(/[٠-٩۰-۹]/g,c => String(c.charCodeAt(0) >= 0x6f0 ? c.charCodeAt(0)-0x6f0 : c.charCodeAt(0)-0x660));
+    const validPhone = value => { const p=latinDigits(value); return /^[+()\d\s.-]+$/.test(p) && p.replace(/\D/g,'').length>=7 && p.replace(/\D/g,'').length<=15; };
+    const validMonth = value => /^\d{4}-(0[1-9]|1[0-2])$/.test(value) && Number(value.slice(0,4))>=1900;
+
+    // Only HTTP(S) links are allowed. User values are always escaped at rendering.
+    function safeURL(value) {
+      const text = value.trim();
+      if (!text || /\s/.test(text)) return null;
+      try {
+        const url = new URL(/^[a-z][a-z\d+.-]*:/i.test(text) ? text : `https://${text}`);
+        return ['http:','https:'].includes(url.protocol) && url.hostname.includes('.') && !url.username && !url.password ? url.href : null;
+      } catch { return null; }
+    }
+    function readableColor(hex) {
+      let rgb = hex.match(/\w\w/g).map(c => parseInt(c,16));
+      const luminance = () => rgb.map(c => { const s=c/255; return s<=.04045?s/12.92:((s+.055)/1.055)**2.4; }).reduce((a,c,i)=>a+c*[.2126,.7152,.0722][i],0);
+      while (1.05/(luminance()+.05)<4.5) rgb=rgb.map(c=>Math.floor(c*.94));
+      return '#'+rgb.map(c=>c.toString(16).padStart(2,'0')).join('');
+    }
+    function blankState() {
+      return {version:1, demo:false, personal:{name:'',title:'',email:'',phone:'',location:'',linkedin:'',website:''}, summary:'',experience:[],education:[],skills:'',projects:[],courses:[],languages:[],order:[...SECTION_KEYS],visible:Object.fromEntries(SECTION_KEYS.map(key=>[key,true])),template:'modern',color:'#276354',lang:'ar',keywords:''};
+    }
+    function sampleState() {
+      const s=blankState();
+      s.demo=true;
+      s.personal={name:'نورة العتيبي',title:'أخصائية تسويق رقمي',email:'noura@example.com',phone:'+966 50 000 0000',location:'الرياض، المملكة العربية السعودية',linkedin:'linkedin.com/in/noura-example',website:''};
+      s.summary='أخصائية تسويق رقمي بخبرة تزيد على 4 سنوات في بناء الحملات الإعلانية وتطوير استراتيجيات المحتوى. أجمع بين تحليل البيانات وفهم سلوك العملاء لصناعة تجارب تسويقية تحقق نتائج قابلة للقياس. أمتلك خبرة في إدارة الميزانيات وتحسين معدلات التحويل والعمل مع فرق متعددة التخصصات، وأسعى إلى دعم نمو العلامات التجارية من خلال قرارات تستند إلى البيانات.';
+      s.experience=[
+        {id:uid(),role:'أخصائية تسويق رقمي',company:'شركة آفاق للحلول الرقمية',location:'الرياض',start:'2023-03',end:'',current:true,bullets:'إدارة حملات رقمية عبر Google Ads ومنصات التواصل بميزانية شهرية قدرها 80,000 ريال، مع متابعة الأداء وتحسين توزيع الإنفاق.\nتحسين معدل التحويل بنسبة 28% خلال 6 أشهر من خلال اختبارات A/B وتطوير صفحات الهبوط بالتعاون مع فريق التصميم.\nإعداد تقارير أداء شهرية باستخدام Google Analytics وExcel، وتحويل النتائج إلى توصيات عملية لفريق الإدارة.'},
+        {id:uid(),role:'منسقة تسويق',company:'استوديو مدار الإبداعي',location:'الرياض',start:'2021-08',end:'2023-02',current:false,bullets:'تخطيط تقويم المحتوى لخمسة عملاء في قطاع التجزئة، وتنسيق الإنتاج والنشر مع فرق التصميم والتحرير.\nالمساهمة في رفع التفاعل بنسبة 35% عبر تحليل تفضيلات الجمهور وتطوير محتوى متوافق مع هوية كل علامة تجارية.'}
+      ];
+      s.education=[{id:uid(),degree:'بكالوريوس إدارة الأعمال — تخصص تسويق',school:'جامعة الملك سعود',location:'الرياض',start:'2017-09',end:'2021-06',current:false,details:'المعدل: 4.60 من 5 — مرتبة الشرف الثانية. مشروع التخرج: أثر التسويق الرقمي في قرارات الشراء لدى المستهلكين.'}];
+      s.skills='التسويق الرقمي، Google Ads، Google Analytics، تحسين محركات البحث SEO، استراتيجية المحتوى، تحليل البيانات، Microsoft Excel، إدارة المشاريع';
+      s.languages=[{id:uid(),name:'العربية',level:'native',details:''},{id:uid(),name:'الإنجليزية',level:'advanced',details:''}];
+      s.projects=[{id:uid(),name:'حملة «خطوة خضراء»',role:'استراتيجية وتسويق محتوى',url:'',start:'',end:'',current:false,bullets:'تصميم وتنفيذ حملة توعوية رقمية لدعم الممارسات المستدامة، شملت تطوير الرسائل وخطة النشر وقياس الأثر.\nالوصول إلى أكثر من 120,000 مستخدم خلال 8 أسابيع، بالتعاون مع فريق من أربعة متطوعين.'}];
+      return s;
+    }
+    // Validate stored data against an allowlist; never trust localStorage as HTML.
+    function normalizeState(raw) {
+      if (!raw || raw.version!==1 || typeof raw.personal!=='object' || !raw.personal) throw new Error('Unsupported document');
+      const s=blankState();
+      const text=(value,max=12000)=>typeof value==='string'?value.slice(0,max):'';
+      for(const key of Object.keys(s.personal)) s.personal[key]=text(raw.personal[key],500);
+      for(const key of ['summary','skills','keywords']) s[key]=text(raw[key]);
+      for(const group of Object.keys(SCHEMAS)) {
+        s[group]=(Array.isArray(raw[group])?raw[group]:[]).slice(0,50).filter(item=>item&&typeof item==='object').map(item=>{
+          const result={id:uid(),current:item.current===true};
+          for(const key of SCHEMAS[group]) result[key]=text(item[key]);
+          if(group==='languages'&&!LANGUAGE_LEVELS.some(level=>level.id===result.level)) result.level='';
+          return result;
+        });
+      }
+      s.order=[...new Set([...(Array.isArray(raw.order)?raw.order:[]).filter(key=>SECTION_KEYS.includes(key)),...SECTION_KEYS])];
+      for(const key of SECTION_KEYS) s.visible[key]=raw.visible?.[key]!==false;
+      s.template=TEMPLATES.some(t=>t.id===raw.template)?raw.template:'modern';
+      s.lang=raw.lang==='en'?'en':'ar';
+      s.color=/^#[0-9a-f]{6}$/i.test(raw.color)?raw.color:'#276354';
+      s.demo=raw.demo===true;
+      return s;
+    }
+
+    const copyData = value => JSON.parse(JSON.stringify(value));
+    const cleanName = value => typeof value==='string'?value.trim().slice(0,80):'';
+    const validId = value => typeof value==='string'&&/^[a-zA-Z0-9-]{1,100}$/.test(value);
+    const documentMeta = record => ({id:record.id,name:record.name,revision:record.revision});
+    function normalizeSettings(raw) {
+      if(!raw||typeof raw!=='object') throw new Error('Invalid template');
+      const checked=normalizeState({ ...blankState(),template:raw.template,color:raw.color,lang:raw.lang,order:raw.order,visible:raw.visible });
+      return Object.fromEntries(['template','color','lang','order','visible'].map(key=>[key,checked[key]]));
+    }
+    function parseRecord(raw,kind) {
+      if(!raw||raw.kind!==kind||raw.version!==1||!validId(raw.id)||!cleanName(raw.name)||!validId(raw.revision)) throw new Error('Invalid saved item');
+      const record={kind,version:1,id:raw.id,name:cleanName(raw.name),revision:raw.revision,updatedAt:Number.isFinite(Date.parse(raw.updatedAt))?raw.updatedAt:new Date(0).toISOString()};
+      if(kind==='resume') record.data=normalizeState(raw.data);
+      else record.settings=normalizeSettings(raw.settings);
+      return record;
+    }
+    function readRecord(prefix,id,kind) {
+      if(!validId(id)) throw new Error('Invalid identifier');
+      const raw=localStorage.getItem(prefix+id);
+      if(raw===null) return null;
+      const record=parseRecord(JSON.parse(raw),kind);
+      if(record.id!==id) throw new Error('Mismatched identifier');
+      return record;
+    }
+    function listRecords(prefix,kind) {
+      const items=[];let skipped=0;
+      for(let index=0;index<localStorage.length;index++) {
+        const key=localStorage.key(index);
+        if(!key?.startsWith(prefix)) continue;
+        try {const record=readRecord(prefix,key.slice(prefix.length),kind);if(record)items.push(record);} catch {skipped++;}
+      }
+      items.sort((a,b)=>Date.parse(b.updatedAt)-Date.parse(a.updatedAt));
+      return {items,skipped};
+    }
+    function draftEnvelope(data,active) {
+      return {format:'seera-draft',version:1,documentId:active?.id||null,documentRevision:active?.revision||null,data};
+    }
+
+    let state, activeDocument=null, storageWarning=false, dirty=false, hasSavedDraft=false, saveTimer, frame, scoreTimer, toastTimer;
+    let latestAudit, manualZoom=null, dragKey=null, restoreNotice='';
+    try {
+      const saved=localStorage.getItem(DRAFT_KEY);
+      if(saved) {
+        const draft=JSON.parse(saved);
+        if(draft.format!=='seera-draft'||draft.version!==1) throw new Error('Invalid draft');
+        state=normalizeState(draft.data);hasSavedDraft=true;
+        if(draft.documentId) {
+          try {
+            const record=readRecord(DOCUMENT_PREFIX,draft.documentId,'resume');
+            if(record) {state=record.data;activeDocument=documentMeta(record);}
+          } catch {restoreNotice='تعذّر فتح السيرة المرتبطة؛ استُعيدت بيانات المسودة المحفوظة.';}
+        }
+      } else {
+        // Keep the old key intact so existing users can recover their original draft.
+        const legacy=localStorage.getItem(STORAGE_KEY);
+        state=legacy?normalizeState(JSON.parse(legacy)):sampleState();hasSavedDraft=!!legacy;
+      }
+    }
+    catch { state=sampleState(); storageWarning=true; }
+
+    const icons={
+      personal:'<circle cx="12" cy="8" r="3"/><path d="M5 21v-3a7 7 0 0 1 14 0v3"/>',
+      summary:'<path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/>',
+      experience:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3M3 12h18M10 12v3h4v-3"/>',
+      education:'<path d="m2 9 10-5 10 5-10 5zM6 12v5c3 3 9 3 12 0v-5M22 9v8"/>',
+      skills:'<path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/>',
+      projects:'<path d="M3 6h7l2 3h9v11H3zM3 6V4h7l2 2h8v3"/>',
+      courses:'<path d="M5 3h14v14H5zM8 7h8M8 10h5"/><circle cx="12" cy="16" r="3"/><path d="m10 19-1 3 3-1 3 1-1-3"/>',
+      languages:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18"/>'
+    };
+    const icon = key => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${icons[key]||''}</svg>`;
+    function field(label,key,value,{group='personal',id='',type='text',placeholder='',hint='',dir='auto',rows=3,disabled=false,autocomplete='off',choices=[]}={}) {
+      const inputId=`field-${group}-${id}-${key}`;
+      const attrs=`id="${inputId}" data-group="${group}" data-key="${key}" data-id="${id}" dir="${dir}" ${disabled?'disabled':''} autocomplete="${autocomplete}" aria-describedby="${inputId}-error${hint?' '+inputId+'-hint':''}"`;
+      const input=type==='select'?`<select ${attrs}>${choices.map(choice=>`<option value="${escapeHTML(choice.value)}" ${choice.value===value?'selected':''}>${escapeHTML(choice.label)}</option>`).join('')}</select>`:type==='textarea'?`<textarea ${attrs} rows="${rows}" maxlength="12000" placeholder="${escapeHTML(placeholder)}">${escapeHTML(value)}</textarea>`:`<input ${attrs} type="${type}" value="${escapeHTML(value)}" maxlength="500" placeholder="${escapeHTML(placeholder)}"${type==='month'?' min="1900-01" max="2199-12"':''}>`;
+      return `<label class="field" for="${inputId}"><span class="field-label">${label}</span>${input}${hint?`<span class="field-hint" id="${inputId}-hint">${hint}</span>`:''}<span class="field-error" id="${inputId}-error"></span></label>`;
+    }
+    function section(key,title,body,open=false) {
+      return `<details class="form-section" data-section="${key}" ${open?'open':''}><summary class="section-summary"><span class="section-symbol">${icon(key)}</span>${title}<svg class="icon chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="fields">${body}</div></details>`;
+    }
+    function entryFields(group,item,index) {
+      const options={group,id:item.id};
+      const f=(label,key,extra={})=>field(label,key,item[key],{...options,...extra});
+      let body='';
+      if(group==='experience') body=f('المسمى الوظيفي','role',{placeholder:'مثال: محلل بيانات'})+f('الشركة أو الجهة','company')+f('المدينة (اختياري)','location');
+      if(group==='education') body=f('المؤهل والتخصص','degree',{placeholder:'مثال: بكالوريوس علوم الحاسب'})+f('الجامعة أو المؤسسة التعليمية','school')+f('المدينة (اختياري)','location');
+      if(group==='projects') body=f('اسم المشروع','name')+f('دورك في المشروع (اختياري)','role')+f('رابط المشروع (اختياري)','url',{dir:'ltr',placeholder:'https://example.com'});
+      if(group==='languages') {
+        body=f('اسم اللغة','name',{placeholder:'مثال: العربية أو English'});
+        body+=f('مستوى الإتقان (اختياري)','level',{type:'select',choices:[{value:'',label:'اختر المستوى'},...LANGUAGE_LEVELS.map(level=>({value:level.id,label:level.ar}))]});
+        body+=f('شهادة أو ملاحظة (اختياري)','details',{placeholder:'مثال: IELTS 7.5 — 2025',hint:'اسم اللغة والملاحظة يظهران كما تكتبهما؛ المستوى يُعرض بلغة السيرة.'});
+      } else if(group==='courses') {
+        body=f('اسم الدورة أو الشهادة','name',{placeholder:'مثال: تحليل البيانات باستخدام Excel'})+f('الجهة المقدمة أو المانحة','provider');
+        body+=`<div class="field-grid">${f('تاريخ الحصول (اختياري)','date',{type:'month',dir:'ltr'})}${f('عدد الساعات (اختياري)','hours',{placeholder:'مثال: 30'})}</div>`;
+        body+=f('رقم الشهادة (اختياري)','credentialId')+f('رابط الشهادة (اختياري)','url',{dir:'ltr',placeholder:'https://example.com/certificate'});
+        body+=f('تفاصيل أو مهارات مكتسبة (اختياري)','details',{type:'textarea',rows:3,placeholder:'اذكر ما تعلمته وله صلة بالوظيفة المستهدفة.'});
+      } else {
+        body+=`<div class="field-grid">${f('تاريخ البداية'+(group==='projects'?' (اختياري)':''),'start',{type:'month',dir:'ltr'})}${f('تاريخ النهاية','end',{type:'month',dir:'ltr',disabled:item.current})}</div>`;
+        body+=`<label class="check-label"><input type="checkbox" data-group="${group}" data-id="${item.id}" data-key="current" ${item.current?'checked':''}>${group==='education'?'أدرس هنا حاليًا':group==='projects'?'مشروع مستمر':'أعمل هنا حاليًا'}</label>`;
+        body+=group==='education'?f('تفاصيل إضافية (اختياري)','details',{type:'textarea',rows:3,placeholder:'المعدل، مرتبة الشرف، أو مواد ذات صلة'}):f('الإنجازات والمسؤوليات','bullets',{type:'textarea',rows:5,hint:'كل نقطة في سطر مستقل. صف ما أنجزته وأثره بأرقام حقيقية.',placeholder:'مثال: خفضت وقت إعداد التقارير بنسبة 20%'});
+      }
+      return `<div class="repeat-item" data-entry="${item.id}"><div class="item-heading"><span>${ENTRY_NAMES[group]} ${index+1}</span><button type="button" class="icon-btn btn-danger" data-remove="${group}" data-id="${item.id}" aria-label="حذف ${ENTRY_NAMES[group]} ${index+1}" title="حذف">×</button></div>${body}</div>`;
+    }
+    function renderForm(openKeys) {
+      const previous=openKeys || [...$('resume-form').querySelectorAll('details[open]')].map(el=>el.dataset.section);
+      const p=state.personal;
+      let html=section('personal','البيانات الشخصية',
+        field('الاسم الكامل','name',p.name,{placeholder:'اسمك كما تحب أن يُعرف',autocomplete:'name'})+
+        field('المسمى المهني','title',p.title,{placeholder:'مثال: مهندس برمجيات'})+
+        `<div class="field-grid">${field('البريد الإلكتروني','email',p.email,{type:'email',dir:'ltr',placeholder:'name@example.com',autocomplete:'email'})}${field('رقم الهاتف','phone',p.phone,{type:'tel',dir:'ltr',placeholder:'+966 5X XXX XXXX',autocomplete:'tel'})}</div>`+
+        field('المدينة، الدولة','location',p.location,{placeholder:'الرياض، السعودية',autocomplete:'address-level2'})+
+        field('رابط LinkedIn (اختياري)','linkedin',p.linkedin,{dir:'ltr',placeholder:'linkedin.com/in/your-name'})+
+        field('الموقع الشخصي (اختياري)','website',p.website,{dir:'ltr',placeholder:'https://example.com'}),previous.includes('personal'));
+      html+=section('summary','الملخص المهني',field('نبذة تركز على خبرتك والقيمة التي تقدمها','summary',state.summary,{group:'root',type:'textarea',rows:6,hint:'3–4 جمل واضحة، مخصصة للفرصة التي تتقدم إليها.'}),previous.includes('summary'));
+      for(const key of SECTION_KEYS.filter(k=>k!=='summary')) {
+        const body=key==='skills'?field('مهاراتك المهنية والتقنية','skills',state.skills,{group:'root',type:'textarea',rows:5,hint:'افصل المهارات بفاصلة أو سطر جديد. أضف لغاتك من قسم «اللغات».',placeholder:'Excel، إدارة المشاريع، تحليل البيانات'}):state[key].map((item,i)=>entryFields(key,item,i)).join('')+`<button type="button" class="add-btn" data-add="${key}">+ إضافة ${ENTRY_NAMES[key]}</button>`;
+        html+=section(key,SECTION_NAMES[key],body,previous.includes(key));
+      }
+      $('resume-form').innerHTML=html;
+      $('demo-note').hidden=!state.demo;
+      $('resume-form').querySelectorAll('input,textarea,select').forEach(validateField);
+    }
+    function activeEntries(key) { return state.visible[key]?state[key].filter(item=>key==='languages'?item.name.trim():SCHEMAS[key].some(k=>!['start','end','date','hours'].includes(k)&&item[k].trim())):[]; }
+    function dateText(value) {
+      if(!validMonth(value)) return '';
+      const [year,month]=value.split('-').map(Number);
+      return new Intl.DateTimeFormat(state.lang==='ar'?'ar-SA-u-ca-gregory-nu-latn':'en-US',{year:'numeric',month:'short',timeZone:'UTC'}).format(new Date(Date.UTC(year,month-1,15)));
+    }
+    function dateRange(item) { return [dateText(item.start),item.current?TITLES[state.lang].present:dateText(item.end)].filter(Boolean).join(' – '); }
+    // Blocks inherit the selected resume direction; inline isolation preserves each text's reading order.
+    const inlineText = value => `<bdi dir="auto">${escapeHTML(value)}</bdi>`;
+    function renderLink(value) { const url=safeURL(value); return url?`<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer"><bdi dir="ltr">${escapeHTML(value.trim())}</bdi></a>`:`<bdi dir="auto">${escapeHTML(value.trim())}</bdi>`; }
+    function bulletList(value) { const lines=splitLines(value); return lines.length?`<ul>${lines.map(line=>`<li>${inlineText(line)}</li>`).join('')}</ul>`:''; }
+    function sectionContent(key) {
+      if(!state.visible[key]) return '';
+      if(key==='summary') return state.summary.trim()?`<p>${inlineText(state.summary.trim())}</p>`:'';
+      if(key==='skills') return splitItems(state.skills).length?`<p>${splitItems(state.skills).map(inlineText).join(state.lang==='ar'?'، ':', ')}</p>`:'';
+      if(key==='languages') {
+        const languages=activeEntries(key);
+        return languages.length?`<ul class="cv-languages">${languages.map(item=>{
+          const level=LANGUAGE_LEVELS.find(level=>level.id===item.level)?.[state.lang]||'';
+          return `<li><strong>${inlineText(item.name.trim())}</strong>${level?' — '+inlineText(level):''}${item.details.trim()?' · '+inlineText(item.details.trim()):''}</li>`;
+        }).join('')}</ul>`:'';
+      }
+      if(key==='courses') return activeEntries(key).map(item=>{
+        const meta=[item.provider,dateText(item.date),item.hours.trim()?`${item.hours.trim()} ${state.lang==='ar'?'ساعة':'hours'}`:'',item.credentialId.trim()?`${state.lang==='ar'?'رقم الشهادة':'Credential ID'}: ${item.credentialId.trim()}`:''].filter(Boolean).join(' | ');
+        return `<div class="cv-entry">${item.name.trim()?`<h3>${inlineText(item.name)}</h3>`:''}${meta?`<p class="cv-meta">${inlineText(meta)}</p>`:''}${item.url.trim()?`<p class="cv-links">${renderLink(item.url)}</p>`:''}${item.details.trim()?`<p>${inlineText(item.details)}</p>`:''}</div>`;
+      }).join('');
+      return activeEntries(key).map(item=>{
+        const heading=key==='education'?item.degree:key==='experience'?item.role:item.name;
+        const meta=[key==='education'?item.school:key==='experience'?item.company:item.role,item.location||'',dateRange(item)].filter(v=>v.trim()).join(' | ');
+        const content=key==='education'?(item.details.trim()?`<p>${inlineText(item.details)}</p>`:''):bulletList(item.bullets);
+        return `<div class="cv-entry">${heading.trim()?`<h3>${inlineText(heading)}</h3>`:''}${meta?`<p class="cv-meta">${inlineText(meta)}</p>`:''}${key==='projects'&&item.url.trim()?`<p class="cv-links">${renderLink(item.url)}</p>`:''}${content}</div>`;
+      }).join('');
+    }
+    function renderResume() {
+      const p=state.personal, contacts=[];
+      if(p.location.trim()) contacts.push(`<bdi>${escapeHTML(p.location.trim())}</bdi>`);
+      if(p.email.trim()) contacts.push(validEmail(p.email)?`<a href="mailto:${escapeHTML(p.email.trim())}"><bdi dir="ltr">${escapeHTML(p.email.trim())}</bdi></a>`:`<bdi dir="ltr">${escapeHTML(p.email.trim())}</bdi>`);
+      if(p.phone.trim()) contacts.push(validPhone(p.phone)?`<a href="tel:${escapeHTML(latinDigits(p.phone).replace(/[^\d+]/g,''))}"><bdi dir="ltr">${escapeHTML(p.phone.trim())}</bdi></a>`:`<bdi dir="ltr">${escapeHTML(p.phone.trim())}</bdi>`);
+      const links=[p.linkedin,p.website].filter(v=>v.trim()).map(renderLink);
+      const separator='<span class="contact-separator">|</span>';
+      let html=`<div class="cv-header" data-cv-section="personal">${p.name.trim()?`<h1>${inlineText(p.name.trim())}</h1>`:''}${p.title.trim()?`<p class="cv-role">${inlineText(p.title.trim())}</p>`:''}${contacts.length?`<p class="cv-contact">${contacts.join(separator)}</p>`:''}${links.length?`<p class="cv-contact">${links.join(separator)}</p>`:''}</div>`;
+      html+='<div class="cv-body">';
+      for(const key of state.order) {
+        const content=sectionContent(key);
+        if(content) html+=`<section class="cv-section" data-cv-section="${key}"><h2>${TITLES[state.lang][key]}</h2>${content}</section>`;
+      }
+      html+='</div>';
+      const resume=$('resume');
+      resume.className=`resume template-${state.template}${isCreative()?' creative-resume':''}`;
+      resume.dir=state.lang==='ar'?'rtl':'ltr';
+      resume.lang=state.lang;
+      const primary=readableColor(state.color);
+      resume.style.setProperty('--primary',primary);
+      const tint=ratio=>'#'+primary.slice(1).match(/../g).map(channel=>Math.round(parseInt(channel,16)*(1-ratio)+255*ratio).toString(16).padStart(2,'0')).join('');
+      resume.style.setProperty('--tint',tint(.94));
+      resume.style.setProperty('--tint-strong',tint(.83));
+      $('creative-note').hidden=!isCreative();
+      resume.innerHTML=html;
+      if(!resume.textContent.trim()) resume.innerHTML='<div class="empty-preview no-print">قصتك تبدأ من هنا.<br>أضف اسمك وخبراتك لتظهر سيرتك مباشرة.</div>';
+      updateZoom();
+    }
+    // Extract by semantic blocks so line order remains intact even when mobile preview is hidden.
+    function resumeText() {
+      const copy=$('resume').cloneNode(true);
+      copy.querySelectorAll('.no-print').forEach(el=>el.remove());
+      copy.querySelectorAll('h1,h2,h3,p,li').forEach(el=>{el.appendChild(document.createTextNode('\n'));});
+      return copy.textContent.replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+    }
+    function updateZoom() {
+      const stage=$('preview-stage');
+      if(!stage.clientWidth) return;
+      const resume=$('resume');
+      const padding=parseFloat(getComputedStyle(stage).paddingLeft)+parseFloat(getComputedStyle(stage).paddingRight);
+      const fit=Math.min(1,(stage.clientWidth-padding-2)/resume.offsetWidth);
+      const scale=manualZoom===null?fit:manualZoom;
+      resume.style.transform=`scale(${scale})`;
+      $('paper-sizer').style.width=`${resume.offsetWidth*scale}px`;
+      $('paper-sizer').style.height=`${resume.offsetHeight*scale}px`;
+      $('zoom-value').value=`${Math.round(scale*100)}%`;
+      $('zoom-out').disabled=scale<=.3;
+      $('zoom-in').disabled=scale>=1.5;
+    }
+    function analyzeResume(text) {
+      const p=state.personal, count=wordCount(text), hasText=count>0;
+      const exp=activeEntries('experience'), edu=activeEntries('education'), projects=activeEntries('projects');
+      const skills=state.visible.skills?splitItems(state.skills):[];
+      const summary=state.visible.summary?state.summary.trim():'';
+      const dates=[...exp,...edu,...projects.filter(i=>i.start||i.end||i.current)];
+      const goodDates=dates.filter(i=>validMonth(i.start)&&(i.current||(validMonth(i.end)&&i.end>=i.start))).length;
+      const evidence=splitLines([...exp,...projects].map(i=>i.bullets).join('\n'));
+      const numbered=evidence.filter(line=>/[\d٠-٩۰-۹]/.test(line)).length;
+      const phrases=['hard worker','team player','go-getter','العمل تحت الضغط','أعمل تحت الضغط','ديناميكي'];
+      const vague=phrases.filter(phrase=>normalText(text).includes(normalText(phrase)));
+      const placeholders=/(?:\b(?:lorem ipsum|your name|your email|TODO|TBD)\b|اسمك هنا|أدخل اسمك|ادخل اسمك)/i.test(text);
+      const links=[p.linkedin,p.website,...projects.map(i=>i.url),...activeEntries('courses').map(i=>i.url)].filter(v=>v.trim());
+      const badLinks=links.some(v=>!safeURL(v));
+      const nonText=!!$('resume').querySelector('table,img,canvas,svg,iframe');
+      const decorative=/\p{Extended_Pictographic}/u.test(text);
+      const realSections=(edu.some(i=>i.degree.trim()&&i.school.trim())?8:0)+(skills.length?6:0)+([...exp].some(i=>i.role.trim()&&i.company.trim())||projects.some(i=>i.name.trim()&&i.bullets.trim())?6:0);
+      const rules=[
+        {name:'الهوية المهنية',max:10,points:(p.name.trim()?5:0)+(p.title.trim()?5:0),tip:'أضف اسمك الكامل والمسمى المهني المستهدف.'},
+        {name:'بيانات اتصال واضحة',max:15,points:(validEmail(p.email)?7:0)+(validPhone(p.phone)?5:0)+(p.location.trim()?3:0),tip:'أكمل البريد الإلكتروني ورقم الهاتف والمدينة وتحقق من صحتها.'},
+        {name:'الأقسام الأساسية',max:20,points:realSections,tip:'أكمل التعليم والمهارات، وأضف خبرة أو مشروعًا ذا صلة.'},
+        {name:'تسلسل زمني سليم',max:10,points:dates.length?Math.round(goodDates/dates.length*10):0,tip:'أكمل تواريخ الخبرات والتعليم؛ يجب ألا تسبق النهاية البداية.'},
+        {name:'ملخص مهني مركّز',max:5,points:wordCount(summary)>=25&&wordCount(summary)<=100?5:summary?2:0,tip:'اكتب ملخصًا مركزًا من نحو 25 إلى 100 كلمة يوضح قيمتك المهنية.'},
+        {name:'مهارات قابلة للبحث',max:10,points:skills.length>=5?10:skills.length>=3?6:skills.length?3:0,tip:'أضف مهارات محددة وصادقة ذات صلة بالوظيفة؛ 5 مهارات نقطة بداية جيدة.'},
+        {name:'إنجازات وأثر قابل للقياس',max:10,points:evidence.length>=3?(numbered>=2?10:numbered?7:4):evidence.length?3:0,tip:'صف إنجازاتك بنقاط واضحة وأضف أثرًا قابلًا للقياس عندما يكون متاحًا.'},
+        {name:'طول محتوى مناسب',max:10,points:count>=250&&count<=750?10:count>=120&&count<250?6:count>750&&count<=1000?5:count>1000?2:count?3:0,tip:count>750?'راجع الإطالة؛ اختر التفاصيل الأهم وفق خبرتك ومتطلبات الوظيفة.':'المحتوى مختصر؛ أضف تفاصيل مفيدة. 250–750 كلمة نطاق إرشادي وليس شرطًا.'},
+        {name:'نص مقروء وروابط سليمة',max:5,points:hasText&&!nonText&&!badLinks&&!decorative?5:0,tip:badLinks?'صحّح الروابط؛ استخدم عنوان موقع صالحًا يبدأ بـ https://.':'استخدم نصوصًا واضحة وتجنب الرموز الزخرفية والصور داخل السيرة.'},
+        {name:'صياغة محددة بلا نصوص مؤقتة',max:5,points:hasText&&!placeholders?(vague.length?2:5):0,tip:placeholders?'استبدل النصوص المؤقتة ببياناتك.':`استبدل الصفات العامة بأمثلة ملموسة${vague.length?' مثل: '+vague.join('، '):''}.`}
+      ];
+      return {score:rules.reduce((sum,r)=>sum+r.points,0),rules,count};
+    }
+    function updateAudit() {
+      const text=resumeText();
+      latestAudit=analyzeResume(text);
+      const {score,rules,count}=latestAudit;
+      const creative=isCreative();
+      $('score-heading-text').textContent=creative?'مؤشر جودة المحتوى':'مؤشر جاهزية السيرة ATS';
+      document.querySelector('.score-card').setAttribute('aria-label',creative?'مراجعة محتوى السيرة':'فحص الجاهزية لأنظمة ATS');
+      $('score-disclaimer').textContent=creative?'المؤشر يراجع المحتوى فقط. القالب الإبداعي غير مقيّم لتوافق ATS؛ اختر من قسم قوالب ATS عند الحاجة.':'فحص محلي للمحتوى والتنسيق، وليس اختبارًا لنظام توظيف فعلي أو ضمانًا للقبول.';
+      $('audit-intro').textContent=creative?'مجموع النقاط من 100 لمحتوى الأقسام الظاهرة. لا يقيّم هذا المؤشر ملاءمة الألوان أو الأعمدة أو التكوين الإبداعي لأنظمة ATS.':'مجموع النقاط من 100. الأوزان تقديرية، والمراجعة تشمل الأقسام الظاهرة فقط. طول النص واكتمال الخبرة يعتمدان أيضًا على مسارك المهني.';
+      $('score-number').value=score;
+      $('score-progress').setAttribute('aria-label',creative?'مؤشر جودة المحتوى التقريبي':'درجة الجاهزية التقريبية');
+      $('score-progress').setAttribute('aria-valuenow',String(score));
+      $('score-progress').setAttribute('aria-valuetext',`${score} من 100، مؤشر تقديري`);
+      $('score-fill').style.width=`${score}%`;
+      $('score-fill').style.background=score>=80?'#4f7c45':score>=50?'#bc792c':'#be5146';
+      $('score-label').textContent=score>=80?'بداية قوية لمسارك القادم':score>=50?'جيدة، وباقي القليل':'لنُكمل الأساسيات أولًا';
+      let tips=rules.filter(r=>r.points<r.max).sort((a,b)=>(b.max-b.points)-(a.max-a.points)).slice(0,2).map(r=>r.tip);
+      if(!tips.length) tips=[creative?'المحتوى مكتمل وفق هذا الفحص. خصّص السيرة للفرصة المستهدفة.':'البنية والمحتوى مكتملان وفق هذا الفحص. خصّص السيرة للفرصة المستهدفة.'];
+      if(state.demo) tips.unshift('بدأت هذه المسودة بمثال؛ راجع جميع الأقسام واستبدل البيانات التوضيحية.');
+      $('score-tips').innerHTML=tips.slice(0,3).map(tip=>`<li>${escapeHTML(tip)}</li>`).join('');
+      $('audit-results').innerHTML=rules.map(r=>`<div class="audit-row"><div>${r.name}${r.points<r.max?`<small>${escapeHTML(r.tip)}</small>`:''}</div><span class="audit-points">${r.points} / ${r.max}</span></div>`).join('');
+      $('word-count').textContent=`${count} كلمة · نص قابل للتحديد والنسخ`;
+      updateKeywords(text);
+    }
+    function updateKeywords(text=resumeText()) {
+      const keys=[...new Set(splitItems(state.keywords))].slice(0,50);
+      if(!keys.length) { $('keyword-result').textContent='أضف كلمات من الوظيفة المستهدفة لبدء المقارنة.'; return; }
+      const normalized=normalText(text);
+      const found=keys.filter(k=>{const term=normalText(k);let at=normalized.indexOf(term);while(at!==-1){const before=normalized[at-1]||'',after=normalized[at+term.length]||'';if(!/[\p{L}\p{N}]/u.test(before)&&!/[\p{L}\p{N}]/u.test(after))return true;at=normalized.indexOf(term,at+1);}return false;});
+      const missing=keys.filter(k=>!found.includes(k));
+      $('keyword-result').textContent=`ظهرت ${found.length} من ${keys.length} كلمات أو عبارات (${Math.round(found.length/keys.length*100)}%). ${missing.length?'لم تظهر: '+missing.join('، ')+'. أضفها فقط إذا كانت تعبّر عن خبرتك.':'كل الكلمات المدخلة موجودة في السيرة.'} تُفحص أول 50 عبارة فقط.`;
+    }
+    function saveNow() {
+      clearTimeout(saveTimer);
+      // An unchanged, older tab must never overwrite a draft saved by another tab.
+      if(!dirty) return true;
+      try {
+        if(activeDocument) {
+          const latest=readRecord(DOCUMENT_PREFIX,activeDocument.id,'resume');
+          const conflict=!latest||latest.revision!==activeDocument.revision;
+          const record={kind:'resume',version:1,id:conflict?uid():activeDocument.id,name:conflict?cleanName(activeDocument.name+' — نسخة تعارض'):activeDocument.name,revision:uid(),updatedAt:new Date().toISOString(),data:copyData(state)};
+          localStorage.setItem(DOCUMENT_PREFIX+record.id,JSON.stringify(record));
+          activeDocument=documentMeta(record);
+          if(conflict) toast('حُفظ تعديلك كنسخة مستقلة لأن السيرة تغيّرت في تبويب آخر.');
+        }
+        localStorage.setItem(DRAFT_KEY,JSON.stringify(draftEnvelope(state,activeDocument)));
+        dirty=false;hasSavedDraft=true;storageWarning=false;
+        $('save-state').textContent=activeDocument?'محفوظ في مكتبتك':'المسودة محفوظة';
+        updateDocumentCaption();
+        return true;
+      } catch {
+        $('save-state').textContent='تعذّر الحفظ التلقائي';
+        if(!storageWarning) toast('تعذّر الحفظ المحلي. نزّل نسخة قابلة للتعديل قبل إغلاق الصفحة.');
+        storageWarning=true;return false;
+      }
+    }
+    function updateDocumentCaption() {
+      $('document-name').textContent=activeDocument?activeDocument.name:state.demo?'مثال توضيحي — جاهز للتخصيص':'مسودة غير مسمّاة';
+      $('document-hint').textContent=activeDocument?'تُحفظ تعديلاتك تلقائيًا في هذه السيرة.':'اختر «حفظ السيرة» لإضافتها إلى مكتبتك باسم.';
+      $('save-document-button').textContent=activeDocument?'حفظ / تسمية السيرة':'حفظ السيرة';
+    }
+    function suggestedName() {return cleanName([state.personal.name,state.personal.title].filter(v=>v.trim()).join(' — '))||'سيرتي الذاتية';}
+    function saveNamedDocument(name,asNew=false) {
+      name=cleanName(name);
+      if(!name) return false;
+      if(!asNew&&activeDocument) {activeDocument.name=name;dirty=true;return saveNow();}
+      if(!saveNow()) return false;
+      try {
+        const record={kind:'resume',version:1,id:uid(),name,revision:uid(),updatedAt:new Date().toISOString(),data:copyData(state)};
+        localStorage.setItem(DOCUMENT_PREFIX+record.id,JSON.stringify(record));
+        activeDocument=documentMeta(record);dirty=true;
+        return saveNow();
+      } catch {storageWarning=true;$('save-state').textContent='تعذّر الحفظ';return false;}
+    }
+    function hasPersonalContent() {
+      return Object.values(state.personal).some(v=>v.trim())||state.summary.trim()||state.skills.trim()||Object.keys(SCHEMAS).some(group=>state[group].some(item=>SCHEMAS[group].some(key=>item[key].trim())));
+    }
+    function preserveBeforeSwitch() {
+      if(!saveNow()) {toast('لم يُحفظ المحتوى الحالي. نزّل نسخة قابلة للتعديل قبل الانتقال.');return false;}
+      if(!activeDocument&&(!state.demo||hasSavedDraft)&&hasPersonalContent()&&!saveNamedDocument(suggestedName(),true)) {toast('تعذّر حفظ المسودة؛ بقيت سيرتك الحالية مفتوحة.');return false;}
+      return true;
+    }
+    function displayDocument(next,active=null) {
+      // Write the next draft first; a quota error must leave the current editor intact.
+      const checked=normalizeState(next);
+      localStorage.setItem(DRAFT_KEY,JSON.stringify(draftEnvelope(checked,active)));
+      clearTimeout(saveTimer);clearTimeout(scoreTimer);clearTimeout(toastTimer);cancelAnimationFrame(frame);
+      state=checked;activeDocument=active;dirty=false;hasSavedDraft=true;storageWarning=false;lastRemoved=null;manualZoom=null;
+      $('toast').hidden=true;$('target-keywords').value=state.keywords;
+      renderForm(['personal']);renderOrder();syncDesign();renderResume();updateAudit();updateDocumentCaption();activateTab('tab-content');
+      setWorkspaceMode('edit');
+      $('save-state').textContent=activeDocument?'محفوظ في مكتبتك':'المسودة محفوظة';
+    }
+    function openSavedDocument(id) {
+      try {
+        if(!preserveBeforeSwitch()) {$('library-message').textContent='تعذّر حفظ التعديلات الحالية. نزّل نسخة قابلة للتعديل قبل الانتقال.';return false;}
+        const record=readRecord(DOCUMENT_PREFIX,id,'resume');
+        if(!record) throw new Error('Missing resume');
+        displayDocument(record.data,documentMeta(record));
+        $('library-dialog').close();toast('فُتحت السيرة. يمكنك متابعة التعديل، وسيُحفظ تلقائيًا.');return true;
+      } catch {$('library-message').textContent='تعذّر فتح السيرة؛ بقي المحتوى الحالي دون استبدال.';return false;}
+    }
+    function formatSavedDate(value) {return new Intl.DateTimeFormat('ar-SA-u-ca-gregory',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value));}
+    function renderLibrary() {
+      try {
+        const {items,skipped}=listRecords(DOCUMENT_PREFIX,'resume');
+        $('library-list').innerHTML=items.length?items.map(item=>`<article class="library-item"><h3>${escapeHTML(item.name)}${item.id===activeDocument?.id?'<span class="current-badge">مفتوحة الآن</span>':''}</h3><p>آخر حفظ: ${escapeHTML(formatSavedDate(item.updatedAt))}${item.data.personal.title?' · '+escapeHTML(item.data.personal.title):''}</p><div class="library-actions"><button type="button" class="btn btn-primary" data-open-document="${item.id}">فتح وتعديل</button><button type="button" class="btn" data-copy-document="${item.id}">إنشاء نسخة</button><button type="button" class="btn" data-export-document="${item.id}">تنزيل نسخة</button><button type="button" class="btn btn-danger" data-delete-document="${item.id}">حذف</button></div></article>`).join(''):'<div class="library-empty">لم تحفظ أي سيرة بعد.<br>اختر «حفظ السيرة» وأعطها اسمًا لتجدها هنا.</div>';
+        $('library-message').textContent=skipped?'تعذّر قراءة بعض العناصر المحفوظة. لم تُحذف أو تُستبدل.':'';
+      } catch {$('library-list').innerHTML='<div class="library-empty">التخزين المحلي غير متاح. يمكنك تنزيل سيرتك كنسخة قابلة للتعديل.</div>';$('library-message').textContent='تعذّر الوصول إلى المكتبة.';}
+    }
+    function renderSavedTemplates(selectedId=$('saved-template-select').value) {
+      try {
+        const {items}=listRecords(TEMPLATE_PREFIX,'template');
+        $('saved-template-select').innerHTML='<option value="">'+(items.length?'اختر قالبًا محفوظًا':'لا توجد قوالب محفوظة بعد')+'</option>'+items.map(item=>`<option value="${item.id}">${escapeHTML(item.name)}</option>`).join('');
+        if(items.some(item=>item.id===selectedId)) $('saved-template-select').value=selectedId;
+      } catch {$('saved-template-select').innerHTML='<option value="">تعذّر الوصول إلى القوالب</option>';}
+      for(const id of ['apply-template-button','export-template-button','delete-template-button']) $(id).disabled=!$('saved-template-select').value;
+    }
+    function saveTemplateRecord(name,settings) {
+      name=cleanName(name);if(!name) throw new Error('Missing name');
+      const record={kind:'template',version:1,id:uid(),name,revision:uid(),updatedAt:new Date().toISOString(),settings:normalizeSettings(settings)};
+      localStorage.setItem(TEMPLATE_PREFIX+record.id,JSON.stringify(record));return record;
+    }
+    function applySavedTemplate(id) {
+      try {
+        const record=readRecord(TEMPLATE_PREFIX,id,'template');if(!record)throw new Error('Missing template');
+        Object.assign(state,copyData(record.settings));syncDesign();renderOrder();commit();toast('طُبّق القالب مع الاحتفاظ ببياناتك.');return true;
+      } catch {toast('تعذّر قراءة هذا القالب.');return false;}
+    }
+    function downloadJSON(payload,name) {
+      const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+      if(blob.size>MAX_IMPORT_BYTES){toast('النسخة كبيرة جدًا. قلّل المحتوى قبل التصدير.');return;}
+      const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;
+      link.download=(cleanName(name).replace(/[\\/:*?"<>|]/g,'')||'seera')+'.json';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+      toast('جُهّزت النسخة للتنزيل. استخدم «استيراد نسخة» لفتحها لاحقًا.');
+    }
+    function resumeBackup(data=state,name=activeDocument?.name||suggestedName()) {return {format:'seera-resume',version:1,name,exportedAt:new Date().toISOString(),data:copyData(data)};}
+    function parseImport(text) {
+      const raw=JSON.parse(text.replace(/^\uFEFF/,''));
+      if(!raw||raw.version!==1)throw new Error('Unsupported file');
+      if(raw.format==='seera-resume')return {kind:'resume',name:cleanName(raw.name)||'سيرة مستوردة',data:normalizeState(raw.data)};
+      if(raw.format==='seera-template')return {kind:'template',name:cleanName(raw.name)||'قالب مستورد',settings:normalizeSettings(raw.settings)};
+      throw new Error('Unsupported file');
+    }
+    function importParsedItem(item) {
+      if(item.kind==='template') {const record=saveTemplateRecord(item.name,item.settings);renderSavedTemplates(record.id);toast('استُورد القالب. ستجده في تبويب التصميم.');return true;}
+      if(!preserveBeforeSwitch())return false;
+      const record={kind:'resume',version:1,id:uid(),name:item.name,revision:uid(),updatedAt:new Date().toISOString(),data:copyData(item.data)};
+      localStorage.setItem(DOCUMENT_PREFIX+record.id,JSON.stringify(record));
+      displayDocument(record.data,documentMeta(record));toast('استُوردت السيرة كنسخة جديدة، وأصبحت جاهزة للتعديل.');return true;
+    }
+    let pendingDeletion=null;
+    function askDelete(kind,id) {
+      try {
+        const prefix=kind==='resume'?DOCUMENT_PREFIX:TEMPLATE_PREFIX,record=readRecord(prefix,id,kind);if(!record)return;
+        pendingDeletion={kind,id};$('delete-message').textContent=`هل تريد حذف «${record.name}» من المكتبة؟ احتفظ بنسخة قابلة للتعديل قبل الحذف. ${kind==='resume'&&activeDocument?.id===id?'ستبقى السيرة المفتوحة كمسودة.':''}`;
+        $('delete-error').textContent='';$('delete-dialog').showModal();
+      } catch {toast('تعذّر الوصول إلى العنصر.');}
+    }
+    function commit() {
+      dirty=true;
+      cancelAnimationFrame(frame);
+      frame=requestAnimationFrame(()=>{renderResume();clearTimeout(scoreTimer);scoreTimer=setTimeout(updateAudit,120);});
+      $('save-state').textContent='جارٍ حفظ التغييرات…';
+      clearTimeout(saveTimer); saveTimer=setTimeout(saveNow,350);
+    }
+    function toast(message) { clearTimeout(toastTimer); $('toast').textContent=message; $('toast').hidden=false; toastTimer=setTimeout(()=>{$('toast').hidden=true;},4000); }
+    function validateField(input) {
+      const {group,key,id}=input.dataset;
+      if(!key) return;
+      const value=input.value.trim();
+      let error='';
+      if(key==='email'&&value&&!validEmail(value)) error='أدخل بريدًا إلكترونيًا صالحًا.';
+      if(key==='phone'&&value&&!validPhone(value)) error='استخدم رقمًا من 7 إلى 15 رقمًا مع رمز الدولة.';
+      if(['linkedin','website','url'].includes(key)&&value&&!safeURL(value)) error='أدخل رابط موقع صالحًا، مثل https://example.com.';
+      if(['start','end','date'].includes(key)) {
+        const item=state[group]?.find(i=>i.id===id);
+        if(value&&!validMonth(value)) error='اختر شهرًا وسنة صحيحين.';
+        if(item&&!item.current&&item.start&&item.end&&item.end<item.start&&key==='end') error='تاريخ النهاية يسبق تاريخ البداية.';
+      }
+      input.setAttribute('aria-invalid',error?'true':'false');
+      const message=$(`${input.id}-error`); if(message) message.textContent=error;
+    }
+    function renderTemplateGallery() {
+      const category=templateCategory==='creative'?'creative':'ats';
+      document.querySelectorAll('[data-category]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.category===category)));
+      $('category-description').textContent=category==='ats'?'6 قوالب بعمود واحد وخطوط قياسية ونص واضح، للاستخدام مع طلبات التوظيف.':'12 تصميمًا بترويسات وبطاقات وتوزيعات متنوعة، للمشاركة البصرية المباشرة دون اشتراط توافق ATS.';
+      const selected=templateInfo(state.template);
+      $('active-template').textContent=`القالب الحالي: ${selected.name} · ${selected.category==='ats'?'ATS':'إبداعي'}`;
+      const blocks=Array.from({length:3},()=>'<span class="mini-block"><em></em><i></i><i></i><i></i></span>').join('');
+      $('template-gallery').innerHTML=TEMPLATES.filter(t=>t.category===category).map(t=>`<button class="template-choice" type="button" data-template="${t.id}" aria-pressed="${t.id===state.template}" aria-label="${escapeHTML(t.name+' — '+t.description)}"><span class="template-thumbnail mini-${t.id}" style="--preview-accent:${t.color}" aria-hidden="true"><span class="mini-heading"><i></i><i></i></span><span class="mini-sections">${blocks}</span></span><strong>${escapeHTML(t.name)}</strong><small>${escapeHTML(t.description)}</small></button>`).join('');
+    }
+    function syncDesign() {
+      templateCategory=templateInfo(state.template).category;
+      renderTemplateGallery();
+      document.querySelectorAll('[data-color]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===state.color)));
+      $('primary-color').value=state.color;
+      $('color-value').textContent=state.color.toUpperCase();
+      $('color-hint').textContent=readableColor(state.color).toLowerCase()!==state.color.toLowerCase()?'عُدّلت درجة اللون في السيرة تلقائيًا للحفاظ على تباين النص.':isCreative()?'يطبّق اللون على العناوين والترويسات والتفاصيل؛ تُشتق منه درجات فاتحة للخلفيات.':'يطبّق اللون على العناوين والخطوط فقط.';
+      $('resume-language').value=state.lang;
+    }
+    function renderOrder() {
+      $('order-list').innerHTML=state.order.map((key,i)=>`<li class="order-row" draggable="true" data-order-key="${key}"><span class="drag-handle" aria-hidden="true">⠿</span><span class="order-title">${SECTION_NAMES[key]}<small>${state.visible[key]?'ظاهر عند إضافة محتوى':'مخفي من السيرة'}</small></span><input type="checkbox" data-visible="${key}" ${state.visible[key]?'checked':''} aria-label="إظهار ${SECTION_NAMES[key]}"><button type="button" class="icon-btn" data-move="-1" data-key="${key}" aria-label="رفع ${SECTION_NAMES[key]}" ${i===0?'disabled':''}>↑</button><button type="button" class="icon-btn" data-move="1" data-key="${key}" aria-label="خفض ${SECTION_NAMES[key]}" ${i===state.order.length-1?'disabled':''}>↓</button></li>`).join('');
+    }
+    function reorder(from,to) {
+      if(from===to||from<0||to<0||to>=state.order.length) return;
+      const [key]=state.order.splice(from,1); state.order.splice(to,0,key);
+      renderOrder(); commit(); $('reorder-status').textContent=`تم نقل ${SECTION_NAMES[key]} إلى الموضع ${to+1}.`;
+    }
+    function activateTab(id) {
+      const tabs=[...document.querySelectorAll('[role="tab"]')];
+      tabs.forEach(tab=>{const selected=tab.id===id;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;$(tab.getAttribute('aria-controls')).hidden=!selected;});
+      $('panel-label').textContent={'tab-content':'ابدأ بقصتك المهنية','tab-design':'لمستك الخاصة','tab-order':'قدّم ما يهم'}[id];
+      $('editor-scroll').scrollTop=0;
+    }
+
+    // View preferences are transient: they never alter a resume or a saved template.
+    let workspaceMode='edit';
+    function setMobileView(view) {
+      document.body.classList.toggle('show-preview',view==='preview');
+      document.querySelectorAll('[data-mobile]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.mobile===view)));
+      requestAnimationFrame(updateZoom);
+    }
+    function setWorkspaceMode(mode) {
+      workspaceMode=mode==='read'?'read':'edit';
+      document.body.classList.toggle('is-reading',workspaceMode==='read');
+      document.querySelectorAll('[data-mode]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.mode===workspaceMode)));
+      $('preview-hint').textContent=workspaceMode==='read'?'وضع القراءة: يمكنك تحديد النص ونسخه. اختر «وضع التحرير» أو «تحرير القسم» للمتابعة.':'انقر مرتين على أي قسم في المعاينة لفتح حقوله، أو اختره من «وصول سريع».';
+      setMobileView(workspaceMode==='read'?'preview':'editor');
+      requestAnimationFrame(updateZoom);
+    }
+    function jumpToSection(key) {
+      if(!['personal',...SECTION_KEYS].includes(key)) return;
+      setWorkspaceMode('edit');
+      activateTab('tab-content');
+      const section=$('resume-form').querySelector(`[data-section="${key}"]`);
+      if(!section) return;
+      section.open=true;
+      $('quick-section').value=key;
+      $('resume-form').querySelectorAll('.quick-highlight').forEach(el=>el.classList.remove('quick-highlight'));
+      section.classList.add('quick-highlight');
+      requestAnimationFrame(()=>{
+        section.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+        const input=section.querySelector('input:not([disabled]),textarea,button[data-add]');
+        input?.focus({preventScroll:true});
+      });
+      setTimeout(()=>section.classList.remove('quick-highlight'),1800);
+    }
+    function syncFullscreen() {
+      const active=!!document.fullscreenElement;
+      $('fullscreen-button').textContent=active?'الخروج من ملء الشاشة':'ملء الشاشة';
+      $('fullscreen-button').setAttribute('aria-pressed',String(active));
+      $('fullscreen-button').title=active?'الخروج من ملء الشاشة (Esc)':'عرض مساحة العمل بملء الشاشة';
+      requestAnimationFrame(updateZoom);
+    }
+    document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>setWorkspaceMode(button.dataset.mode)));
+    $('quick-edit-button').addEventListener('click',()=>jumpToSection($('quick-section').value));
+    $('resume').addEventListener('dblclick',e=>{
+      // Reading mode preserves the browser's normal double-click text selection.
+      if(workspaceMode!=='edit'||e.target.closest('a,button')) return;
+      const section=e.target.closest('[data-cv-section]');
+      if(section){e.preventDefault();jumpToSection(section.dataset.cvSection);}
+    });
+    $('fullscreen-button').addEventListener('click',async()=>{
+      const button=$('fullscreen-button');button.disabled=true;
+      try {
+        if(document.fullscreenElement) await document.exitFullscreen();
+        else await document.documentElement.requestFullscreen();
+      } catch {toast('لم يسمح المتصفح بملء الشاشة. يمكنك متابعة العمل أو استخدام وضع القراءة.');}
+      finally {button.disabled=false;syncFullscreen();}
+    });
+    document.addEventListener('fullscreenchange',syncFullscreen);
+    if(!document.documentElement.requestFullscreen||document.fullscreenEnabled===false) {
+      $('fullscreen-button').disabled=true;
+      $('fullscreen-button').title='ملء الشاشة غير متاح في هذا المتصفح؛ استخدم وضع القراءة لتوسيع المعاينة.';
+    }
+
+    // Delegated form events preserve cursor position while the preview updates.
+    $('resume-form').addEventListener('submit',e=>e.preventDefault());
+    $('resume-form').addEventListener('input',e=>{
+      const input=e.target,{group,key,id}=input.dataset;
+      if(!key) return;
+      const value=input.type==='checkbox'?input.checked:input.value;
+      if(group==='root') state[key]=value;
+      else if(group==='personal') state.personal[key]=value;
+      else {const item=state[group].find(i=>i.id===id);if(!item)return;item[key]=value;}
+      // Keep the demo notice until the sample is explicitly replaced with a blank resume.
+      validateField(input);
+      if(['start','end','current'].includes(key)) {
+        const item=state[group].find(i=>i.id===id);
+        const end=$(`field-${group}-${id}-end`);if(end){end.disabled=item.current;validateField(end);}
+      }
+      commit();
+    });
+    let lastRemoved=null;
+    $('resume-form').addEventListener('click',e=>{
+      const add=e.target.closest('[data-add]'),remove=e.target.closest('[data-remove]');
+      if(add) {
+        const group=add.dataset.add;
+        if(state[group].length>=50){toast('الحد الأقصى 50 عنصرًا في القسم.');return;}
+        const item={id:uid(),current:false};SCHEMAS[group].forEach(key=>{item[key]='';});state[group].push(item);
+        renderForm();commit();$(`field-${group}-${item.id}-${SCHEMAS[group][0]}`).focus();
+      }
+      if(remove) {
+        const group=remove.dataset.remove,index=state[group].findIndex(i=>i.id===remove.dataset.id);
+        lastRemoved={group,index,item:state[group][index]};state[group].splice(index,1);
+        renderForm();commit();toast('تم الحذف. استخدم زر التراجع لاستعادة العنصر.');
+        const undo=document.createElement('button');undo.type='button';undo.className='text-button';undo.style.color='#e0edbd';undo.style.marginInlineStart='12px';undo.textContent='تراجع';
+        undo.onclick=()=>{if(lastRemoved){state[lastRemoved.group].splice(lastRemoved.index,0,lastRemoved.item);lastRemoved=null;renderForm();commit();toast('تمت استعادة العنصر.');}};
+        $('toast').appendChild(undo);clearTimeout(toastTimer);toastTimer=setTimeout(()=>{$('toast').hidden=true;},10000);
+        $('resume-form').querySelector(`[data-add="${group}"]`).focus();
+      }
+    });
+    document.querySelector('[role="tablist"]').addEventListener('click',e=>{const tab=e.target.closest('[role="tab"]');if(tab)activateTab(tab.id);});
+    document.querySelector('[role="tablist"]').addEventListener('keydown',e=>{
+      if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
+      e.preventDefault();const tabs=[...document.querySelectorAll('[role="tab"]')],index=tabs.indexOf(document.activeElement);
+      const next=e.key==='Home'?0:e.key==='End'?tabs.length-1:(index+(e.key==='ArrowLeft'?1:-1)+tabs.length)%tabs.length;
+      activateTab(tabs[next].id);tabs[next].focus();
+    });
+    document.querySelectorAll('[data-category]').forEach(button=>button.addEventListener('click',()=>{
+      templateCategory=button.dataset.category;renderTemplateGallery();
+    }));
+    $('template-gallery').addEventListener('click',e=>{
+      const button=e.target.closest('[data-template]');if(!button)return;
+      const selected=TEMPLATES.find(t=>t.id===button.dataset.template);if(!selected)return;
+      state.template=selected.id;state.color=selected.color;syncDesign();commit();
+      $('template-gallery').querySelector(`[data-template="${selected.id}"]`)?.focus({preventScroll:true});
+    });
+    document.querySelectorAll('[data-color]').forEach(button=>button.addEventListener('click',()=>{state.color=button.dataset.color;syncDesign();commit();}));
+    $('primary-color').addEventListener('input',e=>{state.color=e.target.value;syncDesign();commit();});
+    $('resume-language').addEventListener('change',e=>{state.lang=e.target.value;commit();});
+    $('target-keywords').addEventListener('input',e=>{state.keywords=e.target.value.slice(0,12000);dirty=true;$('save-state').textContent='جارٍ حفظ التغييرات…';updateKeywords();clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,350);});
+    $('order-list').addEventListener('click',e=>{
+      const b=e.target.closest('[data-move]');if(!b)return;
+      const key=b.dataset.key,direction=Number(b.dataset.move),from=state.order.indexOf(key);reorder(from,from+direction);
+      const next=$('order-list').querySelector(`[data-key="${key}"][data-move="${direction}"]`);
+      const fallback=$('order-list').querySelector(`[data-key="${key}"][data-move="${-direction}"]`);
+      (next.disabled?fallback:next).focus();
+    });
+    $('order-list').addEventListener('change',e=>{const key=e.target.dataset.visible;if(key){state.visible[key]=e.target.checked;renderOrder();commit();$('order-list').querySelector(`[data-visible="${key}"]`).focus();}});
+    // Native drag and drop; arrow controls provide keyboard and touch alternatives.
+    const clearDrop=()=>$('order-list').querySelectorAll('.drop-before,.drop-after').forEach(el=>el.classList.remove('drop-before','drop-after'));
+    $('order-list').addEventListener('dragstart',e=>{const row=e.target.closest('[data-order-key]');if(!row)return;dragKey=row.dataset.orderKey;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',dragKey);row.classList.add('dragging');});
+    $('order-list').addEventListener('dragover',e=>{const row=e.target.closest('[data-order-key]');if(!row||!dragKey)return;e.preventDefault();e.dataTransfer.dropEffect='move';clearDrop();if(row.dataset.orderKey!==dragKey)row.classList.add(e.clientY<row.getBoundingClientRect().top+row.offsetHeight/2?'drop-before':'drop-after');});
+    $('order-list').addEventListener('drop',e=>{
+      e.preventDefault();const row=e.target.closest('[data-order-key]');
+      if(row&&dragKey&&row.dataset.orderKey!==dragKey){const from=state.order.indexOf(dragKey),target=state.order.indexOf(row.dataset.orderKey);let to=target+(e.clientY>=row.getBoundingClientRect().top+row.offsetHeight/2?1:0);if(from<to)to--;reorder(from,to);}
+      dragKey=null;clearDrop();renderOrder();
+    });
+    $('order-list').addEventListener('dragend',()=>{dragKey=null;clearDrop();renderOrder();});
+    document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
+    $('help-button').addEventListener('click',()=>$('help-dialog').showModal());
+    $('audit-button').addEventListener('click',()=>{updateAudit();$('audit-dialog').showModal();});
+    $('save-document-button').addEventListener('click',()=>{
+      $('document-title-input').value=activeDocument?.name||suggestedName();$('save-document-error').textContent='';
+      $('save-document-confirm').textContent=activeDocument?'حفظ الاسم والتعديلات':'حفظ السيرة';
+      $('save-copy-button').hidden=!activeDocument;
+      $('save-document-note').textContent=activeDocument?'يُحدّث الحفظ هذه السيرة. اختر «حفظ نسخة جديدة» لإنشاء إصدار مستقل.':'تُحفظ البيانات والتصميم معًا، ويمكنك فتح السيرة وتعديلها لاحقًا.';
+      $('save-document-dialog').showModal();$('document-title-input').focus();
+    });
+    function submitDocumentSave(asNew) {
+      const name=cleanName($('document-title-input').value);
+      if(!name){$('save-document-error').textContent='اكتب اسمًا للسيرة.';return;}
+      if(!saveNamedDocument(name,asNew)){$('save-document-error').textContent='تعذّر الحفظ المحلي. يمكنك تنزيل نسخة قابلة للتعديل.';return;}
+      $('save-document-dialog').close();toast(asNew?'حُفظت نسخة مستقلة من السيرة.':'حُفظت السيرة في مكتبتك.');
+    }
+    $('save-document-form').addEventListener('submit',e=>{e.preventDefault();submitDocumentSave(false);});
+    $('save-copy-button').addEventListener('click',()=>submitDocumentSave(true));
+    $('library-button').addEventListener('click',()=>{const saved=saveNow();renderLibrary();if(!saved)$('library-message').textContent='لم تُحفظ التعديلات الحالية. نزّل نسخة قابلة للتعديل قبل الانتقال.';$('library-dialog').showModal();});
+    $('library-list').addEventListener('click',e=>{
+      const button=e.target.closest('button');if(!button)return;
+      if(button.dataset.openDocument){openSavedDocument(button.dataset.openDocument);return;}
+      if(button.dataset.deleteDocument){askDelete('resume',button.dataset.deleteDocument);return;}
+      try {
+        if(button.dataset.copyDocument) {
+          if(!saveNow()){$('library-message').textContent='تعذّر حفظ التعديلات الحالية قبل النسخ.';return;}
+          const source=readRecord(DOCUMENT_PREFIX,button.dataset.copyDocument,'resume');if(!source)throw new Error('Missing resume');
+          const record={...source,id:uid(),name:cleanName(source.name+' — نسخة'),revision:uid(),updatedAt:new Date().toISOString(),data:copyData(source.data)};
+          localStorage.setItem(DOCUMENT_PREFIX+record.id,JSON.stringify(record));renderLibrary();toast('أُنشئت نسخة مستقلة في المكتبة.');
+        }
+        if(button.dataset.exportDocument) {
+          if(button.dataset.exportDocument===activeDocument?.id) {downloadJSON(resumeBackup(),activeDocument.name);return;}
+          const record=readRecord(DOCUMENT_PREFIX,button.dataset.exportDocument,'resume');if(!record)throw new Error('Missing resume');downloadJSON(resumeBackup(record.data,record.name),record.name);
+        }
+      } catch {$('library-message').textContent='تعذّر إكمال العملية؛ لم تُستبدل السيرة الحالية.';}
+    });
+    $('save-template-button').addEventListener('click',()=>{$('template-title-input').value='';$('save-template-error').textContent='';$('save-template-dialog').showModal();$('template-title-input').focus();});
+    $('save-template-form').addEventListener('submit',e=>{
+      e.preventDefault();const name=cleanName($('template-title-input').value);
+      if(!name){$('save-template-error').textContent='اكتب اسمًا للقالب.';return;}
+      try {const record=saveTemplateRecord(name,state);renderSavedTemplates(record.id);$('save-template-dialog').close();toast('حُفظ قالبك، ويمكن تطبيقه على أي سيرة.');}
+      catch {$('save-template-error').textContent='تعذّر حفظ القالب في هذا المتصفح.';}
+    });
+    $('saved-template-select').addEventListener('change',()=>renderSavedTemplates());
+    $('apply-template-button').addEventListener('click',()=>applySavedTemplate($('saved-template-select').value));
+    $('export-template-button').addEventListener('click',()=>{
+      try {const record=readRecord(TEMPLATE_PREFIX,$('saved-template-select').value,'template');if(!record)throw new Error('Missing template');downloadJSON({format:'seera-template',version:1,name:record.name,settings:record.settings},record.name+'-قالب');}
+      catch {toast('تعذّر تنزيل القالب.');}
+    });
+    $('delete-template-button').addEventListener('click',()=>askDelete('template',$('saved-template-select').value));
+    $('delete-confirm').addEventListener('click',()=>{
+      if(!pendingDeletion)return;
+      const {kind,id}=pendingDeletion;
+      try {
+        if(kind==='resume'&&activeDocument?.id===id) {
+          clearTimeout(saveTimer);
+          // Keep current edits as a detached draft before deleting its library entry.
+          localStorage.setItem(DRAFT_KEY,JSON.stringify(draftEnvelope(state,null)));
+          localStorage.removeItem(DOCUMENT_PREFIX+id);activeDocument=null;dirty=false;hasSavedDraft=true;updateDocumentCaption();$('save-state').textContent='المسودة محفوظة';
+        } else localStorage.removeItem((kind==='resume'?DOCUMENT_PREFIX:TEMPLATE_PREFIX)+id);
+        pendingDeletion=null;$('delete-dialog').close();renderLibrary();renderSavedTemplates();toast('حُذف العنصر من المكتبة.');
+      } catch {$('delete-error').textContent='تعذّر الحذف. لم تُغلق السيرة الحالية.';}
+    });
+    $('delete-dialog').addEventListener('close',()=>{pendingDeletion=null;});
+    $('backup-button').addEventListener('click',()=>downloadJSON(resumeBackup(),activeDocument?.name||suggestedName()));
+    $('import-button').addEventListener('click',()=>$('import-file').click());
+    $('import-file').addEventListener('change',async e=>{
+      const file=e.target.files?.[0];if(!file)return;
+      $('import-button').disabled=true;
+      try {
+        if(file.size>MAX_IMPORT_BYTES){toast('اختر ملفًا لا يتجاوز 10 ميجابايت.');return;}
+        let item;
+        try {item=parseImport(await file.text());}
+        catch {toast('الملف غير صالح. اختر نسخة JSON صادرة من منشئ سِيرة.');return;}
+        importParsedItem(item);
+      } catch {toast('تعذّر حفظ النسخة المستوردة. المحتوى الحالي لم يُستبدل.');}
+      finally {e.target.value='';$('import-button').disabled=false;}
+    });
+    window.addEventListener('storage',e=>{if(e.key?.startsWith(DOCUMENT_PREFIX)&&$('library-dialog').open)renderLibrary();if(e.key?.startsWith(TEMPLATE_PREFIX))renderSavedTemplates();});
+    document.querySelectorAll('[data-new]').forEach(b=>b.addEventListener('click',()=>{$('reset-error').textContent='';$('reset-dialog').showModal();}));
+    $('reset-confirm').addEventListener('click',()=>{
+      if(!preserveBeforeSwitch()){$('reset-error').textContent='تعذّر حفظ السيرة الحالية؛ نزّل نسخة قابلة للتعديل قبل البدء من جديد.';return;}
+      try {
+        const {template,color,lang}=state;displayDocument(Object.assign(blankState(),{template,color,lang}));
+        $('reset-dialog').close();toast('سيرة مستقلة جديدة. يمكنك العودة إلى سيرك المحفوظة في أي وقت.');$('resume-form').querySelector('[data-key="name"]').focus();
+      } catch {$('reset-error').textContent='تعذّر حفظ المسودة الجديدة؛ بقيت سيرتك الحالية مفتوحة.';}
+    });
+    document.querySelectorAll('[data-mobile]').forEach(b=>b.addEventListener('click',()=>setMobileView(b.dataset.mobile)));
+    function adjustZoom(delta) { const current=manualZoom??parseInt($('zoom-value').value)/100;manualZoom=Math.min(1.5,Math.max(.3,current+delta));updateZoom(); }
+    $('zoom-in').addEventListener('click',()=>adjustZoom(.1));
+    $('zoom-out').addEventListener('click',()=>adjustZoom(-.1));
+    $('zoom-fit').addEventListener('click',()=>{manualZoom=null;updateZoom();});
+    function preparePrint() { cancelAnimationFrame(frame);clearTimeout(scoreTimer);renderResume();saveNow(); }
+    $('print-button').addEventListener('click',async()=>{
+      if(!resumeText()){toast('أضف محتوى إلى سيرتك قبل التصدير.');return;}
+      if(document.fullscreenElement) {
+        try {await document.exitFullscreen();}
+        catch {toast('اخرج من ملء الشاشة ثم اختر تحميل بصيغة PDF.');return;}
+      }
+      preparePrint();window.print();
+    });
+    window.addEventListener('beforeprint',preparePrint);
+    window.addEventListener('afterprint',()=>requestAnimationFrame(updateZoom));
+    $('text-download').addEventListener('click',()=>{
+      const text=resumeText();if(!text){toast('أضف محتوى إلى سيرتك أولًا.');return;}
+      const blob=new Blob(['\uFEFF'+text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+      a.href=url;a.download=`${state.personal.name.trim().replace(/[\\/:*?"<>|]/g,'').slice(0,80)||'resume'}-CV.txt`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('تم تجهيز النسخة النصية للتنزيل.');
+    });
+    window.addEventListener('pagehide',saveNow);
+    window.addEventListener('beforeunload',e=>{if(dirty&&!saveNow()){e.preventDefault();e.returnValue='';}});
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveNow();});
+    window.addEventListener('resize',updateZoom);
+    if('ResizeObserver' in window) new ResizeObserver(()=>updateZoom()).observe($('preview-stage'));
+    renderForm(['personal']);renderOrder();syncDesign();renderSavedTemplates();updateDocumentCaption();$('target-keywords').value=state.keywords;renderResume();updateAudit();
+    if(storageWarning){$('save-state').textContent='تعذّر استرجاع المسودة';toast('لم يمكن استرجاع المسودة. ظهرت بيانات توضيحية بدلًا منها.');}
+    else {$('save-state').textContent=hasSavedDraft?'محفوظ على جهازك':'الحفظ التلقائي مفعّل';if(restoreNotice)toast(restoreNotice);}
+  })();
+  </script>
+</body>
+</html>
